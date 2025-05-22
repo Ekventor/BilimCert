@@ -1,0 +1,16 @@
+diff.astextplain.textconv=astextplain
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.process=git-lfs filter-process
+filter.lfs.required=true
+http.sslbackend=schannel
+core.autocrlf=true
+core.fscache=true
+core.symlinks=true
+core.editor="E:\\Microsoft VS Code\\Code.exe" 
+pull.ff=only
+credential.helper=manager
+credential.https://dev.azure.com.usehttppath=true
+init.defaultbranch=master
+user.name=AphexW
+user.email=aboba@mail.ru

@@ -1,0 +1,744 @@
+export default {
+  common: {
+    appName: 'BilimCert',
+    loading: 'Loading...',
+    error: 'An error occurred',
+    success: 'Successfully completed',
+    submit: 'Submit',
+    submitting: 'Submitting...',
+    cancel: 'Cancel',
+    save: 'Save',
+    edit: 'Edit',
+    delete: 'Delete',
+    search: 'Search',
+    back: 'Back',
+    next: 'Next',
+    previous: 'Previous',
+    readMore: 'Read more',
+    viewAll: 'View all',
+    learnMore: 'Learn more',
+    quickLinks: 'Quick Links',
+    backToHome: 'Back to Home',
+  },
+  header: {
+    home: 'Home',
+    recognition: 'Recognition of Foreign Education Documents',
+    accreditation: 'Accreditation',
+    bolognaProcess: 'Bologna Process',
+    news: 'News',
+    contacts: 'Contacts',
+    about: 'About the Center',
+    applyButton: 'Apply Now',
+  },
+  footer: {
+    rights: 'All rights reserved',
+    privacy: 'Privacy Policy',
+    terms: 'Terms of Use',
+    contacts: 'Contacts',
+    address: 'Address',
+    phone: 'Phone',
+    email: 'Email',
+    description: 'Bridging the gap between academic excellence and professional success through innovative programs and partnerships.',
+    quickLinks: 'Quick Links',
+    about: 'About Us',
+    recognition: 'Recognition',
+    accreditation: 'Accreditation',
+    bolognaProcess: 'Bologna Process',
+    news: 'News',
+    forStudents: 'For Students',
+    careerDevelopment: 'Career Development',
+    internships: 'Internships',
+    skillBuilding: 'Skill Building',
+    resources: 'Resources',
+    contactUs: 'Contact Us',
+    address: {
+      line1: '123 Education Avenue',
+      line2: 'Innovation District',
+      line3: 'Astana, Kazakhstan'
+    },
+    accessibility: 'Accessibility',
+    followUs: 'Follow Us',
+    findUs: 'Find Us on the Map',
+    loadingMap: 'Loading map...',
+    accessibilityVersion: 'Accessibility Version',
+    sitemap: 'Sitemap',
+    aboutCenter: 'About the Center',
+    careers: 'Careers',
+    privacyPolicy: 'Privacy Policy',
+  },
+  home: {
+    title: 'BilimCert - Education Quality Assurance Center',
+    subtitle: 'Ensuring and improving education quality in Kazakhstan',
+    applyNow: 'Apply Now',
+    checkStatus: 'Check Status',
+    findUniversity: 'Find University',
+    latestNews: 'Latest News',
+    popularQuestions: 'Frequently Asked Questions',
+    tagline: 'Welcome to BilimCert',
+    feature1Title: 'Expert Support',
+    feature1Description: 'Get expert guidance and support throughout the recognition process',
+    feature2Title: 'Fast Processing',
+    feature2Description: 'Quick and efficient processing of your applications',
+    feature3Title: 'Quality Assurance',
+    feature3Description: 'Ensuring the highest standards in education quality assessment',
+  },
+  mainNav: {
+    forStudents: 'For Students',
+    studentsDescription: 'Resources and opportunities for students',
+    careerDevelopment: 'Career Development',
+    internships: 'Internships',
+    skillBuilding: 'Skill Building',
+    forUniversities: 'For Universities',
+    universitiesDescription: 'Partnership programs and academic collaborations',
+    researchCollaboration: 'Research Collaboration',
+    curriculumDevelopment: 'Curriculum Development',
+    industryPartnerships: 'Industry Partnerships',
+    forEmployers: 'For Employers',
+    employersDescription: 'Talent acquisition and industry partnerships',
+    talentRecruitment: 'Talent Recruitment',
+    professionalDevelopment: 'Professional Development',
+    academicPartnerships: 'Academic Partnerships',
+    about: 'About',
+    aboutDescription: 'Learn about our center and mission',
+    contact: 'Contact',
+    contactDescription: 'Get in touch with our team',
+    getStarted: 'Get Started',
+  },
+  features: {
+    tagline: 'Our Expertise',
+    title: 'Our Key Focus Areas',
+    subtitle: 'Empowering students, universities, and employers through collaborative initiatives',
+    students: {
+      title: 'For Students',
+      description: 'Career development opportunities, internships, and skill-building programs to prepare for professional success.'
+    },
+    universities: {
+      title: 'For Universities',
+      description: 'Collaborative research initiatives, curriculum development support, and industry partnerships.'
+    },
+    employers: {
+      title: 'For Employers',
+      description: 'Access to top talent, professional development programs, and strategic academic partnerships.'
+    }
+  },
+  testimonials: {
+    tagline: 'Success Stories',
+    title: 'What People Say About Us',
+    subtitle: 'Hear from students, universities, and employers who have benefited from our services',
+    quote1: 'BilimCert helped me get my foreign diploma recognized in Kazakhstan quickly and efficiently. The process was straightforward and the staff was very helpful.',
+    author1: 'Aizhan Kenzhebekova',
+    role1: 'Graduate Student',
+    university1: 'University of Astana',
+    quote2: 'As a university administrator, I appreciate the thorough and professional approach BilimCert takes to accreditation. Their guidance has been invaluable.',
+    author2: 'Dr. Marat Nurpeisov',
+    role2: 'Dean of International Affairs',
+    university2: 'Kazakh National University',
+    quote3: 'The quality assurance standards promoted by BilimCert have helped us identify and recruit top talent from accredited institutions.',
+    author3: 'Gulnara Ismailova',
+    role3: 'HR Director',
+    university3: 'National Innovation Company'
+  },
+  partners: {
+    tagline: 'Our Network',
+    title: 'Our Trusted Partners',
+    subtitle: 'Collaborating with leading educational institutions and organizations',
+    backToPartners: 'Back to Partners',
+    joinUs: {
+      title: 'Become Our Partner',
+      description: 'Join our network of educational institutions and organizations committed to excellence in education',
+      button: 'Partner With Us'
+    },
+    join: {
+      description: 'Thank you for your interest in partnering with BilimCert. Please fill out the form below to start the partnership process. Our team will review your application and contact you shortly.',
+      form: {
+        title: 'Partnership Application Form',
+        subtitle: 'Please provide the following information to apply for partnership with BilimCert. Fields marked with an asterisk (*) are required.',
+        organizationName: 'Organization Name',
+        contactPerson: 'Contact Person',
+        email: 'Email Address',
+        phone: 'Phone Number',
+        organizationType: 'Organization Type',
+        partnershipType: 'Partnership Type',
+        message: 'Additional Information',
+        selectOption: 'Select an option',
+        organizationTypes: {
+          university: 'University/Educational Institution',
+          company: 'Company/Business',
+          ngo: 'Non-Governmental Organization',
+          government: 'Government Agency',
+          other: 'Other'
+        },
+        partnershipTypes: {
+          academic: 'Academic Partnership',
+          research: 'Research Collaboration',
+          industry: 'Industry Partnership',
+          funding: 'Funding/Sponsorship',
+          other: 'Other'
+        },
+        errors: {
+          organizationRequired: 'Organization name is required',
+          contactPersonRequired: 'Contact person name is required',
+          emailRequired: 'Email address is required',
+          emailInvalid: 'Please enter a valid email address',
+          phoneRequired: 'Phone number is required',
+          organizationTypeRequired: 'Please select an organization type',
+          partnershipTypeRequired: 'Please select a partnership type'
+        },
+        success: {
+          title: 'Application Submitted Successfully',
+          message: 'Thank you for your interest in partnering with BilimCert. We have received your application and will contact you shortly.'
+        }
+      }
+    }
+  },
+  recognition: {
+    title: 'Recognition of Foreign Education Documents',
+    subtitle: 'Information about the procedure for recognizing foreign education documents',
+    tabs: {
+      overview: 'Overview',
+      types: 'Types of Recognition',
+      application: 'Application Form',
+      calculator: 'Cost Calculator',
+      legal: 'Legal Framework',
+      agreements: 'International Agreements'
+    },
+    types: 'Types of Recognition',
+    application: 'Application',
+    calculator: 'Calculator',
+    legalBase: 'Legal Framework',
+    internationalAgreements: 'International Agreements',
+    description: 'The recognition of foreign education documents is a procedure that establishes the equivalence of education levels and qualifications obtained in foreign educational institutions to those in Kazakhstan.',
+    applyButton: 'Apply for Recognition',
+    process: {
+      title: 'Recognition Process',
+      step1: {
+        title: 'Document Submission',
+        description: 'Submit your application and required documents through our online portal or in person at our office.'
+      },
+      step2: {
+        title: 'Verification',
+        description: 'Our experts verify the authenticity of your documents and evaluate them according to Kazakhstan\'s educational standards.'
+      },
+      step3: {
+        title: 'Decision',
+        description: 'Receive a decision on the recognition of your foreign education document, typically within 30 working days.'
+      }
+    },
+    requirements: {
+      title: 'Required Documents',
+      description: 'To apply for recognition of your foreign education documents, you need to provide the following:',
+      item1: 'Original education document (diploma, certificate, etc.)',
+      item2: 'Transcript or academic record',
+      item3: 'Identity document (passport)',
+      item4: 'Document confirming name change (if applicable)',
+      item5: 'Notarized translations of all documents (if not in Kazakh or Russian)'
+    },
+    benefits: {
+      title: 'Benefits of Recognition',
+      description: 'Having your foreign education documents recognized in Kazakhstan allows you to pursue further education, apply for jobs, and participate fully in professional activities that require specific educational qualifications.'
+    },
+    application: {
+      description: 'Fill out the form below to apply for recognition of your foreign education documents. All fields marked with an asterisk (*) are required.'
+    },
+    types: {
+      description: 'There are different types of recognition processes depending on the purpose and nature of your foreign education documents.',
+      academic: {
+        title: 'Academic Recognition',
+        description: 'Recognition for the purpose of continuing education in Kazakhstan.',
+        item1: 'For admission to educational institutions',
+        item2: 'For transfer between educational programs',
+        item3: 'For academic mobility and exchange programs'
+      },
+      professional: {
+        title: 'Professional Recognition',
+        description: 'Recognition for the purpose of employment and professional activities in Kazakhstan.',
+        item1: 'For employment in regulated professions',
+        item2: 'For obtaining professional licenses',
+        item3: 'For career advancement and professional development'
+      },
+      comparison: {
+        title: 'Comparison of Recognition Types',
+        aspect: 'Aspect',
+        purpose: 'Purpose',
+        requirements: 'Requirements',
+        process: 'Process',
+        academic: {
+          purpose: 'Continuing education, academic mobility',
+          requirements: 'Education documents, transcripts, curriculum',
+          process: 'Focus on academic content and learning outcomes'
+        },
+        professional: {
+          purpose: 'Employment, professional licensing',
+          requirements: 'Education documents, professional qualifications, work experience',
+          process: 'Focus on professional competencies and standards'
+        }
+      }
+    },
+    legal: {
+      title: 'Legal Framework',
+      description: 'The recognition of foreign education documents in Kazakhstan is regulated by a comprehensive legal framework that includes laws, regulations, orders, and standards.',
+      mainLaw: {
+        title: 'Main Legislation',
+        description: 'The primary legal basis for the recognition of foreign education documents in Kazakhstan is the Law "On Education" and related regulations.',
+        quote: 'The recognition of documents on education issued by foreign educational institutions is carried out in the manner determined by the authorized body in the field of education.',
+        explanation: 'This provision establishes the authority of the Ministry of Education and Science to regulate the recognition process and set the standards for evaluating foreign qualifications.'
+      },
+      categories: {
+        all: 'All Documents',
+        laws: 'Laws',
+        regulations: 'Regulations',
+        orders: 'Orders',
+        standards: 'Standards'
+      },
+      viewDocument: 'View Document',
+      noDocumentsFound: 'No documents found matching your criteria.',
+      documents: {
+        law1: {
+          title: 'Law of the Republic of Kazakhstan "On Education"',
+          description: 'The main law regulating educational activities in Kazakhstan, including the recognition of foreign education documents.'
+        },
+        law2: {
+          title: 'Law on Ratification of the Lisbon Recognition Convention',
+          description: 'Law ratifying the Convention on the Recognition of Qualifications concerning Higher Education in the European Region.'
+        },
+        regulation1: {
+          title: 'Government Decree on the Procedure for Recognition',
+          description: 'Regulation establishing the detailed procedure for the recognition of foreign education documents.'
+        },
+        regulation2: {
+          title: 'Rules for Recognition and Nostrification',
+          description: 'Detailed rules for the recognition and nostrification of foreign education documents in Kazakhstan.'
+        },
+        order1: {
+          title: 'Order on the Composition of the Expert Commission',
+          description: 'Ministerial order establishing the composition and functions of the expert commission for the recognition of foreign education documents.'
+        },
+        standard1: {
+          title: 'Standard for Recognition Services',
+          description: 'Technical standard defining the quality requirements for recognition services provided by authorized bodies.'
+        }
+      }
+    },
+    agreements: {
+      title: 'International Agreements',
+      description: 'Kazakhstan has signed numerous bilateral and multilateral agreements on the mutual recognition of education documents with other countries.',
+      importance: {
+        title: 'Importance of International Agreements',
+        description: 'International agreements on the recognition of qualifications play a crucial role in facilitating academic and professional mobility between countries.',
+        point1: 'They establish a legal framework for the mutual recognition of qualifications',
+        point2: 'They simplify and expedite the recognition process for citizens of signatory countries',
+        point3: 'They promote international cooperation in education and professional development',
+        point4: 'They enhance the quality and transparency of recognition procedures'
+      },
+      types: {
+        all: 'All Agreements',
+        bilateral: 'Bilateral',
+        multilateral: 'Multilateral',
+        convention: 'Convention'
+      },
+      viewAgreement: 'View Agreement',
+      noAgreementsFound: 'No agreements found matching your criteria.',
+      info: 'For more information about specific agreements, please contact the National Information Center for Academic Recognition and Mobility.',
+      lisbon: {
+        title: 'Lisbon Recognition Convention',
+        description: 'Convention on the Recognition of Qualifications concerning Higher Education in the European Region, signed in Lisbon in 1997.'
+      },
+      cis: {
+        title: 'CIS Agreement on Recognition',
+        description: 'Agreement on mutual recognition of education documents and academic degrees in the Commonwealth of Independent States.'
+      },
+      russia: {
+        title: 'Kazakhstan-Russia Agreement',
+        description: 'Bilateral agreement between Kazakhstan and Russia on mutual recognition of education documents and academic degrees.'
+      },
+      china: {
+        title: 'Kazakhstan-China Agreement',
+        description: 'Bilateral agreement between Kazakhstan and China on mutual recognition of education documents and academic degrees.'
+      },
+      turkey: {
+        title: 'Kazakhstan-Turkey Agreement',
+        description: 'Bilateral agreement between Kazakhstan and Turkey on mutual recognition of education documents and academic degrees.'
+      },
+      unesco: {
+        title: 'UNESCO Global Convention',
+        description: 'Global Convention on the Recognition of Qualifications concerning Higher Education, adopted by UNESCO in 2019.'
+      }
+    }
+  },
+  accreditation: {
+    title: 'Accreditation',
+    subtitle: 'Information about the accreditation procedure for educational organizations',
+    description: 'Accreditation is a process of external quality review created and used by higher education to scrutinize colleges, universities, and educational programs for quality assurance and quality improvement.',
+    learnMore: 'Learn More',
+    exploreProcess: 'Explore Accreditation Process',
+    viewRegistry: 'View Accredited Institutions',
+    tabs: {
+      overview: 'Overview',
+      procedures: 'Procedures',
+      registry: 'Registry',
+      criteria: 'Evaluation Criteria',
+      reports: 'Reports & Analytics'
+    },
+    importance: {
+      title: 'Importance of Accreditation',
+      description: 'Accreditation plays a crucial role in ensuring the quality and credibility of educational institutions and programs. It provides assurance to students, employers, and the public that the institution meets established standards of quality and integrity.',
+      forInstitutions: {
+        title: 'For Institutions',
+        item1: 'Enhances institutional reputation and credibility',
+        item2: 'Facilitates continuous improvement through regular reviews',
+        item3: 'Enables participation in international cooperation programs'
+      },
+      forStudents: {
+        title: 'For Students',
+        item1: 'Ensures the quality of education and learning outcomes',
+        item2: 'Improves employment prospects and career opportunities',
+        item3: 'Facilitates credit transfer and recognition of qualifications'
+      }
+    },
+    types: {
+      title: 'Types of Accreditation',
+      institutional: {
+        title: 'Institutional Accreditation',
+        description: 'Evaluates the overall quality and effectiveness of an entire educational institution, including its governance, resources, and educational programs.'
+      },
+      program: {
+        title: 'Program Accreditation',
+        description: 'Focuses on specific academic programs or departments, assessing their curriculum, faculty, resources, and student learning outcomes.'
+      }
+    },
+    benefits: {
+      title: 'Benefits of Accreditation',
+      item1: 'Recognition of the quality of education provided by the institution',
+      item2: 'Enhanced opportunities for graduates in employment and further education',
+      item3: 'Access to government funding and international cooperation programs',
+      item4: 'Continuous improvement of educational quality through regular reviews'
+    },
+    requirements: {
+      title: 'Accreditation Requirements',
+      description: 'Educational institutions seeking accreditation must meet certain standards and criteria established by BilimCert in accordance with international best practices.'
+    },
+    process: {
+      title: 'Accreditation Process',
+      description: 'The accreditation process involves a comprehensive evaluation of the institution\'s mission, goals, and the means it uses to achieve them.'
+    },
+    procedures: {
+      title: 'Accreditation Procedures',
+      description: 'BilimCert follows a structured and transparent process for accreditation, ensuring a thorough and fair evaluation of educational institutions and programs.',
+      institutionalTab: 'Institutional Accreditation',
+      programTab: 'Program Accreditation',
+      duration: 'Estimated Duration',
+      requiredDocuments: 'Required Documents',
+      applyButton: 'Apply for Accreditation'
+    },
+    registry: {
+      title: 'Registry of Accredited Institutions',
+      description: 'The registry provides information about educational institutions and programs that have been accredited by BilimCert. You can search and filter the registry to find specific institutions or programs.',
+      search: 'Search',
+      filterType: 'Filter by Type',
+      filterStatus: 'Filter by Status',
+      filterLocation: 'Filter by Location',
+      resultsCount: 'Results:',
+      sortBy: 'Sort by',
+      institutionName: 'Institution Name',
+      type: 'Type',
+      location: 'Location',
+      status: 'Status',
+      validUntil: 'Valid Until',
+      programs: 'Programs',
+      noResults: 'No institutions found matching your criteria.'
+    },
+    criteria: {
+      title: 'Evaluation Criteria',
+      description: 'BilimCert uses a comprehensive set of criteria to evaluate educational institutions and programs. These criteria are aligned with international standards and best practices in quality assurance.',
+      categories: {
+        institutional: 'Institutional Criteria',
+        academic: 'Academic Criteria',
+        resources: 'Resources and Support',
+        quality: 'Quality Assurance',
+        impact: 'Impact and Outreach'
+      }
+    },
+    reports: {
+      title: 'Reports and Analytics',
+      description: 'BilimCert publishes reports and analytics on accreditation activities, trends, and outcomes. These resources provide valuable insights into the quality of education in Kazakhstan.',
+      reportsTab: 'Reports',
+      analyticsTab: 'Analytics',
+      filterType: 'Filter by Type',
+      filterYear: 'Filter by Year',
+      download: 'Download',
+      noResults: 'No reports found matching your criteria.',
+      analytics: {
+        statusChart: 'Accreditation Status Distribution',
+        typeChart: 'Accreditation by Institution Type',
+        trendsChart: 'Accreditation Trends (2018-2023)',
+        viewMore: 'View More Analytics'
+      }
+    }
+  },
+  bolognaProcess: {
+    title: 'Bologna Process',
+    subtitle: 'Information about the Bologna Process',
+    basics: 'Process Basics',
+    ects: 'ECTS Information',
+    nationalReports: 'National Reports',
+    qualificationSystem: 'Qualification System',
+    description: 'The Bologna Process is a series of ministerial meetings and agreements between European countries to ensure comparability in the standards and quality of higher-education qualifications.',
+    history: {
+      title: 'History of the Bologna Process',
+      description: 'The Bologna Process was initiated in 1999 when ministers from 29 European countries signed the Bologna Declaration, which aimed to create a European Higher Education Area (EHEA) by 2010.'
+    },
+    principles: {
+      title: 'Key Principles',
+      item1: 'Adoption of a system of easily readable and comparable degrees',
+      item2: 'Adoption of a system based on three main cycles (bachelor/master/doctorate)',
+      item3: 'Establishment of a system of credits (ECTS)',
+      item4: 'Promotion of mobility for students and academic staff',
+      item5: 'Promotion of European cooperation in quality assurance'
+    },
+    implementation: {
+      title: 'Implementation in Kazakhstan',
+      description: 'Kazakhstan joined the Bologna Process in 2010, becoming the first Central Asian country to be recognized as a full member of the European Higher Education Area.'
+    }
+  },
+  news: {
+    title: 'News and Announcements',
+    subtitle: 'Latest news and announcements',
+    allNews: 'All News',
+    announcements: 'Announcements',
+    archive: 'Archive',
+    readMore: 'Read more',
+    item1: {
+      title: 'International Education Conference 2023',
+      excerpt: 'BilimCert hosted the International Education Conference 2023, bringing together experts from around the world to discuss the future of education quality assurance.'
+    },
+    item2: {
+      title: 'New Partnership with European Universities',
+      excerpt: 'BilimCert has established new partnerships with leading European universities to enhance educational cooperation and student mobility.'
+    },
+    item3: {
+      title: 'Quality Assurance Workshop for Universities',
+      excerpt: 'A series of workshops on quality assurance in higher education was conducted for representatives of Kazakhstani universities.'
+    },
+    item4: {
+      title: 'Student Exchange Program Launch',
+      excerpt: 'BilimCert announces the launch of a new student exchange program in partnership with international educational institutions.'
+    },
+    item5: {
+      title: 'Digital Credentials Initiative',
+      excerpt: 'BilimCert is implementing a new digital credentials system to streamline the verification process for educational documents.'
+    },
+    item6: {
+      title: 'International Accreditation Standards Update',
+      excerpt: 'BilimCert has updated its international accreditation standards to align with the latest global best practices in education quality assurance.'
+    }
+  },
+  contacts: {
+    title: 'Contacts and Support',
+    subtitle: 'Ways to contact us',
+    tagline: 'Get in Touch',
+    address: 'Address',
+    phone: 'Phone',
+    email: 'Email',
+    feedback: 'Feedback',
+    faq: 'Frequently Asked Questions',
+    map: 'Map',
+    contactUs: 'Contact Us',
+    chatWithUs: 'Chat with Us',
+    chatDescription: 'Have a question? Chat with our virtual assistant for immediate help with common questions.',
+    description: 'We are here to help you with any questions regarding education quality assurance, recognition of foreign education documents, and accreditation procedures.',
+    form: {
+      title: 'Contact Form',
+      name: 'Your Name',
+      email: 'Your Email',
+      subject: 'Subject',
+      message: 'Your Message',
+      submit: 'Send Message'
+    }
+  },
+  about: {
+    title: 'About the Center',
+    subtitle: 'Information about the Education Quality Assurance Center',
+    structure: 'Structure',
+    management: 'Management',
+    team: 'Team',
+    procurement: 'Procurement',
+    vacancies: 'Vacancies',
+    description: 'BilimCert is the Education Quality Assurance Center of Kazakhstan, dedicated to ensuring and improving the quality of education through recognition of foreign education documents, accreditation of educational institutions, and implementation of the Bologna Process principles.',
+    mission: {
+      title: 'Our Mission',
+      description: 'To enhance the quality and international recognition of Kazakhstan\'s education system by implementing world-class standards and practices in education quality assurance.'
+    },
+    vision: {
+      title: 'Our Vision',
+      description: 'To be a leading center for education quality assurance in Central Asia, recognized for its expertise, integrity, and commitment to excellence in education.'
+    },
+    values: {
+      title: 'Our Values',
+      item1: 'Excellence - We strive for excellence in all our activities and services.',
+      item2: 'Integrity - We act with honesty, transparency, and ethical conduct.',
+      item3: 'Innovation - We embrace innovation and continuous improvement.',
+      item4: 'Collaboration - We believe in the power of collaboration and partnership.'
+    }
+  },
+  applicationForm: {
+    title: 'Application Form',
+    fullName: 'Full Name',
+    email: 'Email',
+    phone: 'Phone',
+    documentType: 'Document Type',
+    country: 'Country',
+    institution: 'Institution',
+    graduationYear: 'Graduation Year',
+    additionalInfo: 'Additional Information',
+    uploadDocuments: 'Upload Documents',
+    submit: 'Submit',
+    successMessage: 'Application submitted successfully',
+    errorMessage: 'An error occurred while submitting the application',
+    documentTypes: {
+      diploma: 'Diploma',
+      certificate: 'Certificate',
+      transcript: 'Transcript',
+    },
+  },
+  accessibility: {
+    toggleLabel: 'Toggle accessibility options',
+    buttonText: 'Accessibility',
+    title: 'Accessibility Options',
+    highContrast: 'High Contrast Mode',
+    fontSize: 'Font Size',
+    decreaseFontSize: 'Decrease font size',
+    increaseFontSize: 'Increase font size',
+    resetFontSize: 'Reset font size',
+    reset: 'Reset',
+    moreOptions: 'More Options',
+  },
+  faq: {
+    tagline: 'Questions & Answers',
+    viewAll: 'View All FAQs',
+    question1: 'How do I apply for recognition of my foreign education document?',
+    answer1: 'You can apply for recognition of your foreign education document through our online portal or in person at our office. Visit the Recognition page for detailed instructions and required documents.',
+    question2: 'How long does the recognition process take?',
+    answer2: 'The recognition process typically takes 30 working days from the date of submission of all required documents. Complex cases may require additional time.',
+    question3: 'What is the difference between institutional and program accreditation?',
+    answer3: 'Institutional accreditation evaluates the overall quality and effectiveness of an entire educational institution, while program accreditation focuses on specific academic programs or departments.',
+    question4: 'Can I check the status of my application online?',
+    answer4: 'Yes, you can check the status of your application by logging into your account on our website and navigating to the "Application Status" section.',
+    question5: 'Are there any fees for the recognition of foreign education documents?',
+    answer5: 'Yes, there are fees associated with the recognition process. The fee structure depends on the type of document and the level of education. Please visit the Recognition page for current fee information.',
+  },
+  quickAccess: {
+    applyDescription: 'Submit your application for recognition of foreign education documents or accreditation',
+    statusDescription: 'Track the current status of your submitted application',
+    universityDescription: 'Search for accredited universities and educational programs',
+  },
+  quickLinks: {
+    tagline: 'Useful Resources',
+    egov: 'E-Government Portal',
+    ministry: 'Ministry of Education',
+    bologna: 'Bologna Process',
+    database: 'Educational Database',
+    onlineServices: 'Online Services',
+    forms: 'Application Forms',
+  },
+  validation: {
+    required: 'This field is required',
+    email: 'Please enter a valid email address',
+    phone: 'Please enter a valid phone number',
+    documents: 'Please upload at least one document',
+    processing: 'Processing...'
+  },
+  chat: {
+    title: 'BilimCert Chat',
+    subtitle: 'How can we help you?',
+    toggleChat: 'Toggle chat',
+    close: 'Close chat',
+    send: 'Send message',
+    inputPlaceholder: 'Type your message...',
+    inputLabel: 'Chat message',
+    welcomeMessage: 'Hello! How can I assist you today?',
+    disclaimer: 'This is an automated assistant. For complex inquiries, please contact our support team.',
+    responses: {
+      general: 'Thank you for your message. Is there anything specific you would like to know about our services?',
+      help: 'I\'d be happy to help! You can find information about our services on the website, or you can contact our support team for more assistance.',
+      contact: 'You can reach our support team at support@bilimcert.kz or call us at +7 (7172) 12-34-56.',
+      info: 'BilimCert provides educational certification and accreditation services. We work with educational institutions across Kazakhstan to ensure quality standards in education.',
+      apply: 'To apply for our services, please visit the Application page or fill out the form in the relevant section. If you need assistance with your application, our team is ready to help.'
+    }
+  },
+  calculator: {
+    title: 'Recognition Cost Calculator',
+    description: 'Use this calculator to estimate the cost and processing time for recognition of your foreign education documents.',
+    countryLabel: 'Country/Region of Education',
+    documentTypeLabel: 'Document Type',
+    educationLevelLabel: 'Education Level',
+    urgentProcessingLabel: 'Urgent Processing',
+    urgentProcessingDescription: 'Expedited processing with additional fee (approximately 50% of the base cost)',
+    calculateButton: 'Calculate',
+    calculating: 'Calculating...',
+    resultTitle: 'Estimated Result',
+    processingTime: 'Processing Time',
+    days: 'days',
+    baseCost: 'Base Cost',
+    urgentProcessingFee: 'Urgent Processing Fee',
+    translationServices: 'Translation Services (if needed)',
+    totalCost: 'Total Estimated Cost',
+    disclaimer: 'This is an estimate only. Actual costs and processing times may vary depending on specific circumstances.',
+    noResultYet: 'Fill out the form and click "Calculate" to see the estimated cost and processing time.',
+    prototypeWarning: 'This is a prototype calculator. The actual cost and processing time will be determined during the application process.',
+    countries: {
+      eu: 'European Union Countries',
+      cis: 'CIS Countries',
+      asia: 'Asian Countries',
+      america: 'North and South America',
+      other: 'Other Countries'
+    },
+    documentTypes: {
+      diploma: 'Diploma/Degree',
+      certificate: 'Certificate',
+      transcript: 'Transcript/Academic Record'
+    },
+    educationLevels: {
+      secondary: 'Secondary Education',
+      vocational: 'Vocational Education',
+      bachelor: 'Bachelor\'s Degree',
+      master: 'Master\'s Degree',
+      phd: 'PhD/Doctoral Degree'
+    }
+  },
+  terms: {
+    title: 'Terms of Use',
+    lastUpdated: 'Last Updated:',
+    introduction: {
+      title: 'Introduction',
+      paragraph1: 'Welcome to BilimCert. These terms and conditions outline the rules and regulations for the use of our website.',
+      paragraph2: 'By accessing this website, we assume you accept these terms and conditions in full. Do not continue to use BilimCert if you do not agree to all the terms and conditions stated on this page.'
+    },
+    usage: {
+      title: 'Website Usage',
+      paragraph1: 'The following behaviors are prohibited when using our website:',
+      item1: 'Using the website in any way that causes, or may cause, damage to the website or impairment of the availability or accessibility of the website.',
+      item2: 'Using this website in any way that is unlawful, illegal, fraudulent, or harmful.',
+      item3: 'Using this website to copy, store, host, transmit, send, use, publish or distribute any material which consists of malware.',
+      item4: 'Conducting any systematic or automated data collection activities on or in relation to this website without our express written consent.'
+    },
+    intellectualProperty: {
+      title: 'Intellectual Property',
+      paragraph1: 'Unless otherwise stated, we own the intellectual property rights for all material on BilimCert. All intellectual property rights are reserved.',
+      paragraph2: 'You may view and/or print pages from the website for your own personal use subject to restrictions set in these terms and conditions.'
+    },
+    liability: {
+      title: 'Limitations of Liability',
+      paragraph1: 'We will not be liable to you in relation to the contents of, or use of, or otherwise in connection with, this website for any indirect, special or consequential loss; or for any business losses, loss of revenue, income, profits or anticipated savings, loss of contracts or business relationships, loss of reputation or goodwill, or loss or corruption of information or data.',
+      paragraph2: 'Nothing in this disclaimer will exclude or limit any warranty implied by law that it would be unlawful to exclude or limit.'
+    },
+    termination: {
+      title: 'Termination',
+      paragraph1: 'We may terminate your access to the website, without cause or notice, which may result in the forfeiture and destruction of all information associated with your account.'
+    },
+    contact: {
+      title: 'Contact Us',
+      paragraph1: 'If you have any questions about these terms, please contact us at:',
+      address: 'Address'
+    }
+  },
+};

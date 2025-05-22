@@ -1,0 +1,372 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from '@inertiajs/react';
+import { TranslatedText } from './multilingual/TranslatedText/TranslatedText';
+import { LanguageSwitcher } from './multilingual/LanguageSwitcher/LanguageSwitcher';
+import { AccessibilityToggle } from './accessibility/AccessibilityToggle/AccessibilityToggle';
+import { assetUrl } from '../utils/assetHelper';
+import { useLanguage } from '../hooks/useLanguage';
+
+// Navigation menu components
+const NavigationMenu: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="relative z-10">{children}</div>
+);
+
+const NavigationMenuList: React.FC<{ children: React.ReactNode, className?: string }> = ({ children, className = "" }) => (
+  <div className={`flex items-center space-x-4 ${className}`}>{children}</div>
+);
+
+const NavigationMenuItem: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="relative">{children}</div>
+);
+
+const NavigationMenuTrigger: React.FC<{
+  children: React.ReactNode,
+  className?: string,
+  onClick?: () => void,
+  isOpen?: boolean
+}> = ({ children, className = "", onClick, isOpen }) => (
+  <button
+    onClick={onClick}
+    className={`group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-[#003366]/10 focus:bg-[#003366]/10 focus:outline-none disabled:pointer-events-none disabled:opacity-50 text-[#003366] ${className} ${isOpen ? 'bg-[#003366]/10' : ''}`}
+    aria-expanded={isOpen}
+  >
+    {children}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`ml-1 h-3 w-3 transition duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  </button>
+);
+
+const NavigationMenuContent: React.FC<{
+  children: React.ReactNode,
+  isOpen: boolean
+}> = ({ children, isOpen }) => (
+  isOpen ? (
+    <div className="absolute left-1/2 transform -translate-x-1/2 top-0 mt-10 w-auto z-50">
+      <div className="rounded-md border border-gray-200 bg-white p-2 shadow-lg">
+        {children}
+      </div>
+    </div>
+  ) : null
+);
+
+const NavigationMenuLink: React.FC<{
+  href: string,
+  children: React.ReactNode,
+  className?: string
+}> = ({ href, children, className = "" }) => (
+  <Link
+    href={href}
+    className={`block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100 focus:bg-gray-100 ${className}`}
+  >
+    {children}
+  </Link>
+);
+
+// Sheet components for mobile menu
+const Sheet: React.FC<{
+  children: React.ReactNode,
+  isOpen: boolean,
+  onClose: () => void
+}> = ({ children, isOpen, onClose }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex">
+      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+      {children}
+    </div>
+  );
+};
+
+const SheetContent: React.FC<{
+  children: React.ReactNode,
+  side?: "left" | "right",
+  onClose: () => void
+}> = ({ children, side = "right", onClose }) => (
+  <div className={`fixed ${side === "right" ? "right-0" : "left-0"} inset-y-0 w-3/4 max-w-sm bg-white p-6 shadow-lg`}>
+    <button
+      onClick={onClose}
+      className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg>
+      <span className="sr-only">Close</span>
+    </button>
+    {children}
+  </div>
+);
+
+export function MainNav() {
+  const { t } = useLanguage();
+  const [scrolled, setScrolled] = useState(false);
+  const [openItem, setOpenItem] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const items = [
+    {
+      title: "mainNav.forStudents",
+      href: "/students",
+      description: "mainNav.studentsDescription",
+      subItems: [
+        { title: "mainNav.careerDevelopment", href: "/students/career" },
+        { title: "mainNav.internships", href: "/students/internships" },
+        { title: "mainNav.skillBuilding", href: "/students/skills" },
+      ],
+    },
+    {
+      title: "mainNav.forUniversities",
+      href: "/universities",
+      description: "mainNav.universitiesDescription",
+      subItems: [
+        { title: "mainNav.researchCollaboration", href: "/universities/research" },
+        { title: "mainNav.curriculumDevelopment", href: "/universities/curriculum" },
+        { title: "mainNav.industryPartnerships", href: "/universities/partnerships" },
+        { title: "mainNav.universityFinder", href: "/universities/finder" },
+      ],
+    },
+    {
+      title: "mainNav.forEmployers",
+      href: "/employers",
+      description: "mainNav.employersDescription",
+      subItems: [
+        { title: "mainNav.talentRecruitment", href: "/employers/recruitment" },
+        { title: "mainNav.professionalDevelopment", href: "/employers/development" },
+        { title: "mainNav.academicPartnerships", href: "/employers/partnerships" },
+      ],
+    },
+    {
+      title: "mainNav.about",
+      href: "/about",
+      description: "mainNav.aboutDescription",
+    },
+    {
+      title: "mainNav.contact",
+      href: "/contacts",
+      description: "mainNav.contactDescription",
+    },
+  ];
+
+  // Add standard navigation items
+  const standardNavItems = [
+    { key: 'home', href: '/' },
+    { key: 'recognition', href: '/recognition' },
+    { key: 'accreditation', href: '/accreditation' },
+    { key: 'bolognaProcess', href: '/bologna-process' },
+    { key: 'news', href: '/news' },
+    { key: 'contacts', href: '/contacts' },
+    { key: 'faq', href: '/faq' },
+    { key: 'applicationStatus', href: '/application-status' },
+  ];
+
+  const toggleItem = (index: number) => {
+    setOpenItem(openItem === index ? null : index);
+  };
+
+  return (
+    <div className="w-full">
+      <div className="container mx-auto px-4 flex justify-between items-center">
+        <div className="flex">
+          <Link href="/" className="flex items-center space-x-6">
+            <img
+              src={assetUrl('images/logo1.png')}
+              alt="BilimCert Logo"
+              className="h-18 w-auto object-contain"
+              aria-label="BilimCert - Home"
+            />
+            <span
+              className={`text-xl font-bold bg-gradient-to-r from-[#003366] to-[#0066CC] bg-clip-text text-transparent transition-all ${scrolled ? "opacity-100" : "opacity-100"}`}
+            >
+              BilimCert
+            </span>
+          </Link>
+        </div>
+
+        {/* Desktop Navigation - Advanced with dropdowns (large screens) */}
+        <div className="hidden lg:flex mx-auto">
+          <NavigationMenu>
+            <NavigationMenuList className="space-x-8">
+              {items.slice(0, 3).map((item, index) => (
+                <NavigationMenuItem key={item.title}>
+                  <NavigationMenuTrigger
+                    className="bg-transparent hover:bg-gray-100/80 min-h-[44px] min-w-[44px]"
+                    onClick={() => toggleItem(index)}
+                    isOpen={openItem === index}
+                  >
+                    <TranslatedText textKey={item.title} />
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent isOpen={openItem === index}>
+                    <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px]">
+                      <li className="row-span-3">
+                        <NavigationMenuLink href={item.href} className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-[#003366] to-[#004080] p-6 no-underline outline-none focus:shadow-md">
+                          <div className="mt-4 mb-2 text-lg font-medium text-white">
+                            <TranslatedText textKey={item.title} />
+                          </div>
+                          <p className="text-sm leading-tight text-white/90">
+                            <TranslatedText textKey={item.description} />
+                          </p>
+                        </NavigationMenuLink>
+                      </li>
+                      {item.subItems?.map((subItem) => (
+                        <li key={subItem.title}>
+                          <NavigationMenuLink href={subItem.href} className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100 focus:bg-gray-100 min-h-[44px]">
+                            <div className="text-sm font-medium leading-none text-[#003366]">
+                              <TranslatedText textKey={subItem.title} />
+                            </div>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ))}
+              {items.slice(3).map((item) => (
+                <NavigationMenuItem key={item.title}>
+                  <Link
+                    href={item.href}
+                    className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-5 py-2 text-sm font-medium transition-colors hover:bg-[#003366]/10 focus:bg-[#003366]/10 focus:outline-none text-[#003366] min-h-[44px] min-w-[44px] mx-1"
+                  >
+                    <TranslatedText textKey={item.title} />
+                  </Link>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+
+        {/* Tablet Navigation - Simplified but visible (medium screens) */}
+        <nav className="hidden md:flex lg:hidden mx-auto">
+          <div className="flex items-center space-x-2 overflow-x-auto">
+            {standardNavItems.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                className="text-[#003366] hover:text-[#002244] whitespace-nowrap transition-colors text-sm font-medium px-3 py-2 rounded-md hover:bg-gray-100/80 min-h-[44px] flex items-center justify-center"
+              >
+                <TranslatedText textKey={`header.${item.key}`} />
+              </Link>
+            ))}
+          </div>
+        </nav>
+
+        {/* Right Side - Language, Accessibility, Apply Button */}
+        <div className="hidden md:flex items-center space-x-6 ml-4">
+          <LanguageSwitcher />
+          <AccessibilityToggle />
+          <Link
+            href="/application"
+            className="bg-gradient-to-r from-[#FF6600] to-[#FF8800] hover:opacity-90 text-white px-5 py-2 rounded-md transition-colors text-sm font-medium whitespace-nowrap"
+          >
+            <TranslatedText textKey="header.applyButton" />
+          </Link>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <button
+            type="button"
+            className="text-gray-700 hover:text-[#003366] focus:outline-none min-h-[48px] min-w-[48px] flex items-center justify-center"
+            onClick={() => setMobileMenuOpen(true)}
+            aria-expanded={mobileMenuOpen}
+            aria-label="Toggle menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile Menu - Sheet Style */}
+        <Sheet isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)}>
+          <SheetContent side="right" onClose={() => setMobileMenuOpen(false)}>
+            <div className="flex items-center mb-8">
+              <img
+                src={assetUrl('images/logo1.png')}
+                alt="BilimCert Logo"
+                className="h-18 w-auto object-contain"
+              />
+              <span className="ml-6 text-xl font-bold text-[#003366]">BilimCert</span>
+            </div>
+
+            <nav className="grid gap-4 text-lg font-medium">
+              {standardNavItems.map((item) => (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  className="group flex min-h-[48px] w-full items-center rounded-md px-4 py-3 hover:bg-gray-100 text-base"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <TranslatedText textKey={`header.${item.key}`} />
+                </Link>
+              ))}
+
+              {/* Add the advanced menu items */}
+              {items.map((item) => (
+                <div key={item.title} className="space-y-3 mb-2">
+                  <Link
+                    href={item.href}
+                    className="group flex min-h-[48px] w-full items-center rounded-md px-4 py-3 hover:bg-gray-100 font-medium text-base"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <TranslatedText textKey={item.title} />
+                  </Link>
+
+                  {item.subItems && (
+                    <div className="pl-4 border-l-2 border-gray-200 space-y-3">
+                      {item.subItems.map((subItem) => (
+                        <Link
+                          key={subItem.title}
+                          href={subItem.href}
+                          className="group flex min-h-[48px] w-full items-center rounded-md px-4 py-2 hover:bg-gray-100 text-base"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <TranslatedText textKey={subItem.title} />
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+
+            <div className="mt-8 space-y-6">
+              <div className="flex items-center justify-between space-x-4">
+                <LanguageSwitcher />
+                <AccessibilityToggle />
+              </div>
+              <Link
+                href="/application"
+                className="block w-full bg-gradient-to-r from-[#FF6600] to-[#FF8800] hover:opacity-90 text-white px-4 py-3 rounded-md transition-colors text-center min-h-[48px] text-lg font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <TranslatedText textKey="header.applyButton" />
+              </Link>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </div>
+  );
+}
