@@ -4,6 +4,8 @@ from ninja import Router
 from http import HTTPStatus
 from .schemas import LoginSchema, RegisterSchema
 from asgiref.sync import sync_to_async
+from django.conf import settings
+import httpx
 
 
 User = get_user_model()
@@ -11,9 +13,26 @@ router = Router(tags=["Auth"])
 
 login = sync_to_async(__import__("django.contrib.auth").contrib.auth.login)
 logout = sync_to_async(__import__("django.contrib.auth").contrib.auth.logout)
+RECAPTCHA_SECRET_KEY = settings.RECAPTCHA_PRIVATE_KEY
 
 @router.post("/auth", auth=None)
 async def auth_view(request: HttpRequest, data: LoginSchema):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://www.google.com/recaptcha/api/siteverify",
+            data={
+                "secret": RECAPTCHA_SECRET_KEY,
+                "response": data.recaptcha_token,
+                "remoteip": request.client.host,
+            }
+        )
+    result = response.json()
+    if not result.get("success"):
+        return {
+            "status": HTTPStatus.BAD_REQUEST,
+            "response": "reCAPTCHA не пройдена"
+        }
+
     user = await User.objects.filter(username=data.username).afirst()
     if not user or not await sync_to_async(user.check_password)(data.password):
         return {
@@ -26,6 +45,21 @@ async def auth_view(request: HttpRequest, data: LoginSchema):
 
 @router.post("/registration", auth=None)
 async def registration_view(request: HttpRequest, data: RegisterSchema):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://www.google.com/recaptcha/api/siteverify",
+            data={
+                "secret": RECAPTCHA_SECRET_KEY,
+                "response": data.recaptcha_token
+            }
+        )
+    result = response.json()
+    if not result.get("success"):
+        return {
+            "status": HTTPStatus.BAD_REQUEST,
+            "response": "reCAPTCHA не пройдена"
+        }
+
     if await User.objects.filter(username=data.username).aexists():
         return {
             "status": HTTPStatus.BAD_REQUEST,
@@ -37,7 +71,7 @@ async def registration_view(request: HttpRequest, data: RegisterSchema):
             "status": HTTPStatus.BAD_REQUEST,
             "response": f"Пользователь с email {data.email} уже существует"
         }
-    
+
     if await User.objects.filter(phone=data.phone).aexists():
         return {
             "status": HTTPStatus.BAD_REQUEST,

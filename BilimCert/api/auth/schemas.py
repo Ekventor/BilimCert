@@ -10,6 +10,7 @@ class RegisterSchema(BaseModel):
     phone: str
     password: str
     auth: Optional[bool] = False
+    recaptcha_token: str
 
 class LoginSchema(BaseModel):
     username: str
