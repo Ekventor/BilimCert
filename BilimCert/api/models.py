@@ -1,82 +1,40 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from asgiref.sync import sync_to_async
-# Create your models here.
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+
 
 class UserManager(BaseUserManager):
-    def create_user(self, username ,first_name, last_name, email, phone, sex, password=None,
-                    role=0) -> AbstractBaseUser:
-                    
-        if not first_name and not last_name:
-            raise TypeError("Users must have a first name and last name.")
+    def create_user(self, email, username, password=None, **extra_fields):
         if not email:
-            raise TypeError("Users must have an email address.")
+            raise ValueError("Поле email обязательно")
+        if not username:
+            raise ValueError("Поле username обязательно")
 
-        user = self.model(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=self.normalize_email(email),
-            phone=phone,
-            sex=sex,
-            role=role
-        )
+        email = self.normalize_email(email)
+        user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, email, phone, sex, password=None,
-                      role=0) -> AbstractBaseUser:
-        if not password:
-            raise TypeError("Superusers must have a password.")
+    def create_superuser(self, email, username, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_active", True)
+        extra_fields.setdefault("is_superuser", True)
 
-        user = self.create_user(first_name, last_name, email, phone, sex, password,
-                            role=1)
-        user.save()
-        return user
+        return self.create_user(email, username, password, **extra_fields)
 
-    async def acreate_user(self, *args, **kwargs):
-        return await sync_to_async(self.create_user)(*args, **kwargs)
-
-    async def acreate_superuser(self, *args, **kwargs):
-        return await sync_to_async(self.create_superuser)(*args, **kwargs)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=128, unique=True, primary_key=True, db_index=True)
-    first_name = models.CharField(max_length=64)
-    last_name = models.CharField(max_length=64)
+    user_id = models.BigAutoField(primary_key=True)
     email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=32, unique=True)
-    sex = models.SmallIntegerField(default=0)
+    username = models.CharField(max_length=64, unique=True)
+    password = models.CharField(max_length=256)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    role = models.SmallIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["first_name", "last_name", "email"]
 
     objects = UserManager()
 
-    def __str__(self) -> str:
-        return str(self.email)
-    
-    def serialize(self) -> dict:
-        return {
-            "firstName": self.first_name,
-            "lastName": self.last_name,
-            "email": self.email,
-            "phone": self.phone,
-            "sex": self.sex,
-            "address": self.address,
-            "isStaff": self.is_staff,
-            "isActive": self.is_active,
-            "role": self.role,
-            "created_by_administrator": self.created_by_administrator
-        }
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email"]
 
-    def get_full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
-
-    def get_short_name(self) -> str:
-        return self.first_name
+    def __str__(self):
+        return self.username

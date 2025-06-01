@@ -3,11 +3,7 @@ from typing import Optional
 
 class RegisterSchema(BaseModel):
     username: str
-    first_name: str
-    last_name: str
     email: EmailStr
-    sex: int
-    phone: str
     password: str
     auth: Optional[bool] = False
     recaptcha_token: str
@@ -15,3 +11,4 @@ class RegisterSchema(BaseModel):
 class LoginSchema(BaseModel):
     username: str
     password: str
+    recaptcha_token: str

@@ -22,8 +22,7 @@ async def send_email(
             "https://www.google.com/recaptcha/api/siteverify",
             data={
                 "secret": settings.RECAPTCHA_PRIVATE_KEY,
-                "response": recaptcha_token,
-                "remoteip": request.client.host,
+                "response": recaptcha_token
             }
         )
     result = response.json()

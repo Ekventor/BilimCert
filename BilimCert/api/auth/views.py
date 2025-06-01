@@ -7,13 +7,13 @@ from asgiref.sync import sync_to_async
 from django.conf import settings
 import httpx
 
-
 User = get_user_model()
 router = Router(tags=["Auth"])
 
 login = sync_to_async(__import__("django.contrib.auth").contrib.auth.login)
 logout = sync_to_async(__import__("django.contrib.auth").contrib.auth.logout)
 RECAPTCHA_SECRET_KEY = settings.RECAPTCHA_PRIVATE_KEY
+
 
 @router.post("/auth", auth=None)
 async def auth_view(request: HttpRequest, data: LoginSchema):
@@ -22,8 +22,7 @@ async def auth_view(request: HttpRequest, data: LoginSchema):
             "https://www.google.com/recaptcha/api/siteverify",
             data={
                 "secret": RECAPTCHA_SECRET_KEY,
-                "response": data.recaptcha_token,
-                "remoteip": request.client.host,
+                "response": data.recaptcha_token
             }
         )
     result = response.json()
@@ -42,6 +41,7 @@ async def auth_view(request: HttpRequest, data: LoginSchema):
 
     await login(request, user)
     return {"status": HTTPStatus.OK}
+
 
 @router.post("/registration", auth=None)
 async def registration_view(request: HttpRequest, data: RegisterSchema):
@@ -63,7 +63,7 @@ async def registration_view(request: HttpRequest, data: RegisterSchema):
     if await User.objects.filter(username=data.username).aexists():
         return {
             "status": HTTPStatus.BAD_REQUEST,
-            "response": f"Пользователь с Логином {data.username} уже существует"
+            "response": f"Пользователь с логином {data.username} уже существует"
         }
 
     if await User.objects.filter(email=data.email).aexists():
@@ -72,26 +72,17 @@ async def registration_view(request: HttpRequest, data: RegisterSchema):
             "response": f"Пользователь с email {data.email} уже существует"
         }
 
-    if await User.objects.filter(phone=data.phone).aexists():
-        return {
-            "status": HTTPStatus.BAD_REQUEST,
-            "response": f"Пользователь с номером телефона {data.phone} уже существует"
-        }
-
     user = await sync_to_async(User.objects.create_user)(
         username=data.username,
         email=data.email,
-        phone=data.phone,
         password=data.password,
-        first_name=data.first_name,
-        last_name=data.last_name,
-        sex=data.sex,
     )
 
     if data.auth:
         await login(request, user)
 
     return {"status": HTTPStatus.OK}
+
 
 @router.post("/logout")
 async def logout_view(request: HttpRequest):
