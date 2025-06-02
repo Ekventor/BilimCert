@@ -1,0 +1,16 @@
+{
+  "name": "BilimCert - Білім сапасын бағалау орталығы",
+  "short_name": "BilimCert",
+  "description": "Қазақстан Республикасының білім сапасын бағалау орталығы",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#003366",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
