@@ -128,11 +128,11 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'email'
-EMAIL_HOST_PASSWORD = 'password'
+EMAIL_HOST = 'mail.bilimcert.kz'
+EMAIL_PORT = 25
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'admin@bilimcert.kz'
+EMAIL_HOST_PASSWORD = 'Ilikepizzaandalabala0906'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 NINJA_BODY_PARSERS = ["multipart/form-data"]
 RECAPTCHA_PRIVATE_KEY = '6Lftx0wrAAAAAG3nA3cts_AoIo781ooq2vemu4Wp'
