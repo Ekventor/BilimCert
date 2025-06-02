@@ -4,7 +4,7 @@ from asgiref.sync import sync_to_async
 from api.news.services.news_view import track_news_view, get_viewed_at
 from api.news.services.news_view import get_views_count
 
-router = Router()
+router = Router(tags=["News"])
 
 def get_client_ip(request):
     xff = request.headers.get("X-Forwarded-For")
