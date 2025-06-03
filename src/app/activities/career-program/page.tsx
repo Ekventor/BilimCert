@@ -281,8 +281,14 @@ export default function CareerProgramPage() {
       title="Программа «Мамандығым-болашағым»"
       content={content}
       breadcrumbs={breadcrumbs}
-      downloadableFiles={downloadableFiles}
-      lastUpdated="2024-01-21"
+      documents={downloadableFiles.map((file, index) => ({
+        id: (index + 1).toString(),
+        title: file.title,
+        url: file.fileUrl,
+        type: file.fileType as 'pdf' | 'doc' | 'docx' | 'xls' | 'xlsx',
+        size: file.fileSize
+      }))}
+      updatedAt="2024-01-21"
     />
   )
 }

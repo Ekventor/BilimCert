@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { Send, User, Mail, MessageSquare } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Send, User, Mail, MessageSquare, Shield } from 'lucide-react'
+import ReCAPTCHA from 'react-google-recaptcha'
 import { TranslatedText } from '@/components/ui/TranslatedText'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { bilimcertAPI } from '@/lib/bilimcert-api'
@@ -23,6 +24,7 @@ interface QuestionFormProps {
 
 export function QuestionForm({ onSubmitSuccess, className = '' }: QuestionFormProps) {
   const { t } = useLanguage()
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
   const [formData, setFormData] = useState<QuestionFormData>({
     name: '',
     email: '',
@@ -66,8 +68,21 @@ export function QuestionForm({ onSubmitSuccess, className = '' }: QuestionFormPr
       newErrors.question = 'Сұрақ кемінде 10 таңбадан тұруы керек'
     }
 
+    if (!formData.recaptcha_token) {
+      newErrors.recaptcha_token = 'reCAPTCHA растауы міндетті'
+    }
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
+  }
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setFormData(prev => ({ ...prev, recaptcha_token: token || '' }))
+
+    // Clear reCAPTCHA error when user completes it
+    if (token && errors.recaptcha_token) {
+      setErrors(prev => ({ ...prev, recaptcha_token: '' }))
+    }
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -105,6 +120,9 @@ export function QuestionForm({ onSubmitSuccess, className = '' }: QuestionFormPr
           category: 'general',
           recaptcha_token: ''
         })
+
+        // Reset reCAPTCHA
+        recaptchaRef.current?.reset()
 
         onSubmitSuccess?.()
       } else {

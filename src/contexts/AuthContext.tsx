@@ -102,7 +102,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     try {
-      const response = await djangoApi.register({
+      const response = await bilimcertAPI.register({
         username,
         email,
         password,
@@ -126,7 +126,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = async () => {
     try {
-      await djangoApi.logout()
+      await bilimcertAPI.logout()
     } catch (error) {
       console.error('Logout error:', error)
     }
@@ -141,7 +141,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const updateProfile = async (profileData: Partial<User>): Promise<boolean> => {
     try {
-      const response = await djangoApi.updateProfile(profileData)
+      const response = await bilimcertAPI.updateProfile(profileData)
 
       if (response.success && response.data) {
         setUser(response.data)

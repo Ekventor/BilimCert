@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { TranslatedText } from '@/components/ui/TranslatedText'
 import { useAuth } from '@/contexts/AuthContext'
+import type { User } from '@/types'
 import {
-  User,
+  User as UserIcon,
   Mail,
   Phone,
   Building,
@@ -100,10 +101,10 @@ function ProfilePageContent() {
         firstName: user.first_name || '',
         lastName: user.last_name || '',
         email: user.email || '',
-        phone: user.phone_number || '',
-        organization: user.organization || '',
-        position: user.position || '',
-        preferredLanguage: (user.preferred_language as 'kz' | 'ru' | 'en') || 'kz'
+        phone: (user as any).phone_number || '',
+        organization: (user as any).organization || '',
+        position: (user as any).position || '',
+        preferredLanguage: ((user as any).preferred_language as 'kz' | 'ru' | 'en') || 'kz'
       })
     }
   }, [user])
@@ -126,7 +127,7 @@ function ProfilePageContent() {
         organization: profileData.organization,
         position: profileData.position,
         preferred_language: profileData.preferredLanguage
-      })
+      } as any)
 
       if (success) {
         setIsEditing(false)
@@ -144,10 +145,10 @@ function ProfilePageContent() {
         firstName: user.first_name || '',
         lastName: user.last_name || '',
         email: user.email || '',
-        phone: user.phone_number || '',
-        organization: user.organization || '',
-        position: user.position || '',
-        preferredLanguage: (user.preferred_language as 'kz' | 'ru' | 'en') || 'kz'
+        phone: (user as any).phone_number || '',
+        organization: (user as any).organization || '',
+        position: (user as any).position || '',
+        preferredLanguage: ((user as any).preferred_language as 'kz' | 'ru' | 'en') || 'kz'
       })
     }
     setIsEditing(false)
@@ -240,7 +241,7 @@ function ProfilePageContent() {
                 : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600'
                 }`}
             >
-              <User className="w-4 h-4 inline mr-2" />
+              <UserIcon className="w-4 h-4 inline mr-2" />
               Жеке ақпарат
             </button>
             <button
@@ -322,7 +323,7 @@ function ProfilePageContent() {
                   />
                 ) : (
                   <div className="flex items-center">
-                    <User className="w-4 h-4 text-gray-400 mr-2" />
+                    <UserIcon className="w-4 h-4 text-gray-400 mr-2" />
                     <span className="text-gray-900">{profileData.firstName || 'Көрсетілмеген'}</span>
                   </div>
                 )}
@@ -343,7 +344,7 @@ function ProfilePageContent() {
                   />
                 ) : (
                   <div className="flex items-center">
-                    <User className="w-4 h-4 text-gray-400 mr-2" />
+                    <UserIcon className="w-4 h-4 text-gray-400 mr-2" />
                     <span className="text-gray-900">{profileData.lastName || 'Көрсетілмеген'}</span>
                   </div>
                 )}

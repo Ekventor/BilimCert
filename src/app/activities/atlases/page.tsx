@@ -1,7 +1,6 @@
 'use client'
 
 import { ArticlePage } from '@/components/ui/ArticlePage'
-import { TranslatedText } from '@/components/ui/TranslatedText'
 
 export default function AtlasesPage() {
   const breadcrumbs = [

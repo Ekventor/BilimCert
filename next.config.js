@@ -91,6 +91,11 @@ const nextConfig = {
 
   // Webpack configuration
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Disable barrel optimization for lucide-react to avoid Handshake import error
+    config.resolve.alias = {
+      ...config.resolve.alias,
+    };
+
     // Add custom webpack configurations here if needed
     return config;
   },

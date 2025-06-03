@@ -121,6 +121,16 @@ class BilimCertAPI {
     })
   }
 
+  async updateProfile(profileData: any): Promise<ApiResponse> {
+    return this.request('/auth/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(profileData),
+    })
+  }
+
   // УНИВЕРСАЛЬНАЯ ОТПРАВКА EMAIL - все формы используют этот endpoint
   async sendEmail(data: EmailFormData): Promise<ApiResponse> {
     const formData = new FormData()
