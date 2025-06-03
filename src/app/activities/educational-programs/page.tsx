@@ -21,14 +21,14 @@ export default function EducationalProgramsPage() {
       id: '2',
       title: 'Оқу жоспарлары үлгілері',
       url: '/downloads/curriculum-templates.docx',
-      type: 'word' as const,
+      type: 'docx' as const,
       size: '4.1 МБ'
     },
     {
       id: '3',
       title: 'Сапа көрсеткіштері',
       url: '/downloads/quality-indicators.xlsx',
-      type: 'excel' as const,
+      type: 'xlsx' as const,
       size: '2.8 МБ'
     }
   ]

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -11,20 +11,22 @@ import { TranslatedText } from '@/components/ui/TranslatedText'
 import toast from 'react-hot-toast'
 
 interface LoginForm {
-  email: string
+  username: string
   password: string
   rememberMe: boolean
+  recaptchaToken: string
 }
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { login, isAuthenticated, isLoading } = useAuth()
 
   const [formData, setFormData] = useState<LoginForm>({
-    email: '',
+    username: '',
     password: '',
-    rememberMe: false
+    rememberMe: false,
+    recaptchaToken: ''
   })
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState<Partial<LoginForm>>({})
@@ -42,16 +44,18 @@ export default function LoginPage() {
   const validateForm = (): boolean => {
     const newErrors: Partial<LoginForm> = {}
 
-    if (!formData.email) {
-      newErrors.email = 'Электрондық пошта міндетті'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Дұрыс емес электрондық пошта форматы'
+    if (!formData.username) {
+      newErrors.username = 'Пайдаланушы аты міндетті'
     }
 
     if (!formData.password) {
       newErrors.password = 'Құпия сөз міндетті'
     } else if (formData.password.length < 6) {
       newErrors.password = 'Құпия сөз кемінде 6 таңбадан тұруы керек'
+    }
+
+    if (!formData.recaptchaToken) {
+      newErrors.recaptchaToken = 'reCAPTCHA растауы міндетті'
     }
 
     setErrors(newErrors)
@@ -84,10 +88,10 @@ export default function LoginPage() {
     setIsSubmitting(true)
 
     try {
-      const success = await login(formData.email, formData.password)
+      const success = await login(formData.username, formData.password, formData.recaptchaToken)
 
       if (success) {
-        router.push('/admin')
+        router.push(redirectTo)
       }
     } catch (error) {
       console.error('Login error:', error)
@@ -150,21 +154,21 @@ export default function LoginPage() {
                   <Mail className="h-5 w-5 text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  value={formData.email}
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  value={formData.username}
                   onChange={handleInputChange}
-                  className={`appearance-none block w-full pl-10 pr-3 py-2 border rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-primary-500 dark:focus:border-primary-400 sm:text-sm transition-colors duration-200 ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                  className={`appearance-none block w-full pl-10 pr-3 py-2 border rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-primary-500 dark:focus:border-primary-400 sm:text-sm transition-colors duration-200 ${errors.username ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
                     }`}
-                  placeholder="your@email.com"
+                  placeholder="Пайдаланушы аты"
                 />
               </div>
-              {errors.email && (
+              {errors.username && (
                 <div className="mt-1 flex items-center text-sm text-red-600 dark:text-red-400">
                   <AlertCircle className="w-4 h-4 mr-1" />
-                  {errors.email}
+                  {errors.username}
                 </div>
               )}
             </div>
@@ -235,6 +239,25 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* reCAPTCHA */}
+            <div>
+              <div className="text-center">
+                <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  reCAPTCHA растауы міндетті
+                </div>
+                {/* reCAPTCHA component will be added here */}
+                <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded border text-center text-sm text-gray-500">
+                  reCAPTCHA компоненті
+                </div>
+                {errors.recaptchaToken && (
+                  <div className="mt-1 flex items-center justify-center text-sm text-red-600 dark:text-red-400">
+                    <AlertCircle className="w-4 h-4 mr-1" />
+                    {errors.recaptchaToken}
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Submit Button */}
             <div>
               <button
@@ -277,5 +300,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
+      </div>
+    }>
+      <LoginPageContent />
+    </Suspense>
   )
 }

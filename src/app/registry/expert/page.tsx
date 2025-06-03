@@ -36,7 +36,7 @@ export default function ExpertPage() {
       id: '4',
       title: 'Есеп үлгілері',
       url: '/downloads/report-templates.docx',
-      type: 'word' as const,
+      type: 'docx' as const,
       size: '2.1 МБ'
     },
     {
@@ -131,7 +131,7 @@ export default function ExpertPage() {
 
   return (
     <ArticlePage
-      title={<TranslatedText textKey="registry.expert.title" fallback="Эксперту ОП - Руководство для экспертов образовательных программ" />}
+      title="Эксперту ОП - Руководство для экспертов образовательных программ"
       content={content}
       breadcrumbs={breadcrumbs}
       publishedAt="2018-06-01"

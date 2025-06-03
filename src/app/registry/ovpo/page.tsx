@@ -13,35 +13,35 @@ export default function OVPOPage() {
   const documents = [
     {
       id: '1',
-      title: <TranslatedText textKey="registry.ovpo.documents.ovpoList" fallback="ОВПО тізімі" />,
+      title: 'ОВПО тізімі',
       url: '/downloads/ovpo-list.pdf',
       type: 'pdf' as const,
       size: '8.5 МБ'
     },
     {
       id: '2',
-      title: <TranslatedText textKey="registry.ovpo.documents.registrationGuide" fallback="Тіркеу нұсқаулығы" />,
+      title: 'Тіркеу нұсқаулығы',
       url: '/downloads/registration-guide.pdf',
       type: 'pdf' as const,
       size: '3.2 МБ'
     },
     {
       id: '3',
-      title: <TranslatedText textKey="registry.ovpo.documents.qualityIndicators" fallback="Сапа көрсеткіштері" />,
+      title: 'Сапа көрсеткіштері',
       url: '/downloads/quality-indicators.xlsx',
-      type: 'excel' as const,
+      type: 'xlsx' as const,
       size: '2.8 МБ'
     },
     {
       id: '4',
-      title: <TranslatedText textKey="registry.ovpo.documents.statisticalReport2024" fallback="Статистикалық есеп 2024" />,
+      title: 'Статистикалық есеп 2024',
       url: '/downloads/statistical-report-2024.pdf',
       type: 'pdf' as const,
       size: '6.1 МБ'
     },
     {
       id: '5',
-      title: <TranslatedText textKey="registry.ovpo.documents.monitoringResults" fallback="Мониторинг нәтижелері" />,
+      title: 'Мониторинг нәтижелері',
       url: '/downloads/monitoring-results.pdf',
       type: 'pdf' as const,
       size: '4.7 МБ'
@@ -218,7 +218,7 @@ export default function OVPOPage() {
 
   return (
     <ArticlePage
-      title={<TranslatedText textKey="registry.ovpo.title" fallback="ОВПО - Организации высшего и послевузовского образования" />}
+      title="ОВПО - Организации высшего и послевузовского образования"
       content={content}
       breadcrumbs={breadcrumbs}
       publishedAt="2020-01-15"

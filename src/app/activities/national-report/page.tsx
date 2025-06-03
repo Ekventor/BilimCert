@@ -22,7 +22,7 @@ export default function NationalReportPage() {
       id: '2',
       title: 'Статистикалық қосымша',
       url: '/downloads/statistical-appendix.xlsx',
-      type: 'excel' as const,
+      type: 'xlsx' as const,
       size: '8.7 МБ'
     },
     {
@@ -101,7 +101,7 @@ export default function NationalReportPage() {
 
   return (
     <ArticlePage
-      title={<TranslatedText textKey="activities.nationalReportPage.title" fallback="Ұлттық баянат - Білім беру жүйесінің дамуы" />}
+      title="Ұлттық баянат - Білім беру жүйесінің дамуы"
       content={content}
       breadcrumbs={breadcrumbs}
       publishedAt="2024-01-01"

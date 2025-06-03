@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { CheckCircle, Download, Eye, ArrowRight, Home } from 'lucide-react'
@@ -13,7 +13,7 @@ import { MobileMenuProvider } from '@/contexts/MobileMenuContext'
 import { MobileMenu } from '@/components/ui/MobileMenu'
 import { ChatButton } from '@/components/ui/ChatButton'
 
-export default function ApplicationSuccessPage() {
+function ApplicationSuccessContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { t } = useLanguage()
@@ -258,5 +258,17 @@ export default function ApplicationSuccessPage() {
         <ChatButton />
       </div>
     </MobileMenuProvider>
+  )
+}
+
+export default function ApplicationSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
+      </div>
+    }>
+      <ApplicationSuccessContent />
+    </Suspense>
   )
 }

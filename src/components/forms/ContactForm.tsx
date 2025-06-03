@@ -7,6 +7,7 @@ import { z } from 'zod'
 import { motion } from 'framer-motion'
 import { Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
 import { TranslatedText } from '@/components/ui/TranslatedText'
+import { bilimcertAPI } from '@/lib/bilimcert-api'
 import toast from 'react-hot-toast'
 
 // Form validation schema
@@ -16,7 +17,8 @@ const contactSchema = z.object({
   phone: z.string().min(10, 'Телефон нөмірі дұрыс емес'),
   subject: z.string().min(5, 'Тақырып кем дегенде 5 таңбадан тұруы керек'),
   message: z.string().min(20, 'Хабарлама кем дегенде 20 таңбадан тұруы керек'),
-  department: z.string().optional()
+  department: z.string().optional(),
+  recaptcha_token: z.string().min(1, 'reCAPTCHA растауы міндетті')
 })
 
 type ContactFormData = z.infer<typeof contactSchema>
@@ -58,7 +60,8 @@ export function ContactForm() {
       phone: '',
       subject: '',
       message: '',
-      department: 'general'
+      department: 'general',
+      recaptcha_token: ''
     }
   })
 
@@ -69,20 +72,18 @@ export function ContactForm() {
     setSubmitStatus('idle')
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // In real implementation, send to backend:
-      // const response = await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data)
-      // })
-      
-      setSubmitStatus('success')
-      toast.success('Хабарлама сәтті жіберілді!')
-      reset()
-      
+      // Отправляем через BilimCert API (POST /api/email/send)
+      const response = await bilimcertAPI.submitContactForm(data)
+
+      if (response.success) {
+        setSubmitStatus('success')
+        toast.success('Хабарлама сәтті жіберілді!')
+        reset()
+      } else {
+        setSubmitStatus('error')
+        toast.error(response.message || 'Хабарлама жіберуде қате орын алды')
+      }
+
     } catch (error) {
       console.error('Error submitting contact form:', error)
       setSubmitStatus('error')
@@ -262,6 +263,33 @@ export function ContactForm() {
               {watchedMessage?.length || 0} / 20 минимум
             </span>
           </div>
+        </div>
+
+        {/* reCAPTCHA */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Қауіпсіздік растауы *
+          </label>
+          <Controller
+            name="recaptcha_token"
+            control={control}
+            render={({ field }) => (
+              <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded border text-center">
+                <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  reCAPTCHA компоненті орналасады
+                </div>
+                {/* Здесь будет настоящий reCAPTCHA компонент */}
+                <input
+                  type="hidden"
+                  {...field}
+                  value="demo_recaptcha_token" // Временное значение для демо
+                />
+              </div>
+            )}
+          />
+          {errors.recaptcha_token && (
+            <p className="mt-1 text-sm text-red-600">{errors.recaptcha_token.message}</p>
+          )}
         </div>
 
         {/* Submit Button */}

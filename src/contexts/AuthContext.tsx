@@ -3,24 +3,32 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { bilimcertAPI, type RegisterSchema, type LoginSchema } from '@/lib/bilimcert-api'
 
 interface User {
   id: string
+  username: string
   email: string
-  name: string
-  role: 'admin' | 'user'
+  first_name?: string
+  last_name?: string
   is_staff: boolean
   is_superuser: boolean
+  is_active: boolean
+  phone_number?: string
+  organization?: string
+  position?: string
+  preferred_language?: string
 }
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
   isAuthenticated: boolean
-  login: (email: string, password: string) => Promise<boolean>
-  register: (name: string, email: string, password: string, confirmPassword: string, recaptchaToken: string) => Promise<boolean>
+  login: (username: string, password: string, recaptchaToken: string) => Promise<boolean>
+  register: (username: string, email: string, password: string, recaptchaToken: string, auth?: boolean) => Promise<boolean>
   logout: () => void
   refreshUser: () => Promise<void>
+  updateProfile: (profileData: Partial<User>) => Promise<boolean>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -51,52 +59,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const checkAuthStatus = async () => {
     try {
-      const token = localStorage.getItem('auth_token')
-      if (!token) {
-        setIsLoading(false)
-        return
-      }
-
-      const response = await fetch('/api/auth/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+      // Django session-based auth - проверяем через cookie
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+        credentials: 'include',
       })
 
       if (response.ok) {
         const userData = await response.json()
-        setUser(userData.user)
-      } else {
-        // Token is invalid, remove it
-        localStorage.removeItem('auth_token')
+        setUser(userData)
       }
     } catch (error) {
       console.error('Error checking auth status:', error)
-      localStorage.removeItem('auth_token')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (username: string, password: string, recaptchaToken: string): Promise<boolean> => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      const response = await bilimcertAPI.login({
+        username,
+        password,
+        recaptcha_token: recaptchaToken
       })
 
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        localStorage.setItem('auth_token', data.token)
-        setUser(data.user)
+      if (response.success) {
+        // После успешного логина проверяем статус пользователя
+        await checkAuthStatus()
         toast.success('Сәтті кірдіңіз!')
         return true
       } else {
-        toast.error(data.message || 'Кіру кезінде қате орын алды')
+        toast.error(response.message || 'Кіру кезінде қате орын алды')
         return false
       }
     } catch (error) {
@@ -106,33 +99,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  const register = async (name: string, email: string, password: string, confirmPassword: string, recaptchaToken: string): Promise<boolean> => {
-    if (password !== confirmPassword) {
-      toast.error('Құпия сөздер сәйкес келмейді')
-      return false
-    }
-
+  const register = async (username: string, email: string, password: string, recaptchaToken: string, auth: boolean = false): Promise<boolean> => {
     if (!recaptchaToken) {
       toast.error('reCAPTCHA растауы міндетті')
       return false
     }
 
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password, recaptchaToken }),
+      const response = await bilimcertAPI.register({
+        username,
+        email,
+        password,
+        recaptcha_token: recaptchaToken,
+        auth
       })
 
-      const data = await response.json()
-
-      if (response.ok && data.success) {
+      if (response.success) {
         toast.success('Тіркелу сәтті аяқталды! Енді кіре аласыз.')
         return true
       } else {
-        toast.error(data.message || 'Тіркелу кезінде қате орын алды')
+        toast.error(response.message || 'Тіркелу кезінде қате орын алды')
         return false
       }
     } catch (error) {
@@ -142,8 +128,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  const logout = () => {
-    localStorage.removeItem('auth_token')
+  const logout = async () => {
+    try {
+      await bilimcertAPI.logout()
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
     setUser(null)
     toast.success('Сәтті шықтыңыз!')
     router.push('/')
@@ -151,6 +141,34 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const refreshUser = async () => {
     await checkAuthStatus()
+  }
+
+  const updateProfile = async (profileData: Partial<User>): Promise<boolean> => {
+    try {
+      // Для обновления профиля используем прямой fetch
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/profile/update`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(profileData),
+      })
+
+      if (response.ok) {
+        const updatedUser = await response.json()
+        setUser(updatedUser)
+        toast.success('Профиль сәтті жаңартылды!')
+        return true
+      } else {
+        toast.error('Профильді жаңарту кезінде қате орын алды')
+        return false
+      }
+    } catch (error) {
+      console.error('Profile update error:', error)
+      toast.error('Профильді жаңарту кезінде қате орын алды')
+      return false
+    }
   }
 
   const value: AuthContextType = {
@@ -161,6 +179,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     register,
     logout,
     refreshUser,
+    updateProfile,
   }
 
   return (

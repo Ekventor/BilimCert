@@ -291,8 +291,10 @@ export default function NationalCenterPage() {
       title="Материалы Национального Центра развития высшего образования"
       content={content}
       breadcrumbs={breadcrumbs}
-      downloadableFiles={downloadableFiles}
-      lastUpdated="2024-01-25"
+      publishedAt="2024-01-25"
+      updatedAt="2024-01-25"
+      author="BilimCert"
+      viewsCount={1800}
     />
   )
 }

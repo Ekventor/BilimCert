@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { TranslatedText } from '@/components/ui/TranslatedText'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/contexts/AuthContext'
 import {
   User,
   Mail,
@@ -63,7 +63,7 @@ const mockApplications: Application[] = [
   }
 ]
 
-export default function ProfilePage() {
+function ProfilePageContent() {
   const router = useRouter()
   const { user, updateProfile, isAuthenticated, isLoading } = useAuth()
 
@@ -600,4 +600,8 @@ export default function ProfilePage() {
       </div>
     </PageLayout>
   )
+}
+
+export default function ProfilePage() {
+  return <ProfilePageContent />
 }

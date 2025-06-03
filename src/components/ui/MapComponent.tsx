@@ -40,7 +40,7 @@ interface MapComponentProps {
 // Fallback component for when Leaflet is not available
 function MapFallback({ height = '400px' }: { height?: string }) {
   return (
-    <div 
+    <div
       className="bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center"
       style={{ height }}
     >
@@ -59,21 +59,18 @@ function MapFallback({ height = '400px' }: { height?: string }) {
   )
 }
 
-export function MapComponent({ 
-  center, 
-  zoom = 13, 
-  markers = [], 
+export function MapComponent({
+  center,
+  zoom = 13,
+  markers = [],
   height = '400px',
   className = ''
 }: MapComponentProps) {
   const mapRef = useRef<any>(null)
 
   useEffect(() => {
-    // Import Leaflet CSS dynamically
+    // Fix for default markers in Leaflet with webpack
     if (typeof window !== 'undefined') {
-      import('leaflet/dist/leaflet.css')
-      
-      // Fix for default markers in Leaflet with webpack
       import('leaflet').then((L) => {
         delete (L.Icon.Default.prototype as any)._getIconUrl
         L.Icon.Default.mergeOptions({
@@ -103,7 +100,7 @@ export function MapComponent({
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          
+
           {markers.map((marker, index) => (
             <Marker key={index} position={marker.position}>
               <Popup>
@@ -121,8 +118,8 @@ export function MapComponent({
 }
 
 // Alternative simple map component using iframe (Google Maps embed)
-export function SimpleMapComponent({ 
-  address, 
+export function SimpleMapComponent({
+  address,
   height = '400px',
   className = ''
 }: {
@@ -131,7 +128,7 @@ export function SimpleMapComponent({
   className?: string
 }) {
   const encodedAddress = encodeURIComponent(address)
-  
+
   return (
     <div className={`relative ${className}`} style={{ height }}>
       <iframe
@@ -165,14 +162,14 @@ export function StaticMapComponent({
   className?: string
 }) {
   const [lat, lng] = center
-  
+
   // Build markers parameter for Google Static Maps API
-  const markersParam = markers.length > 0 
+  const markersParam = markers.length > 0
     ? `&markers=${markers.map(m => `${m.position[0]},${m.position[1]}`).join('|')}`
     : ''
-  
+
   const staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=${width}x${height}&maptype=roadmap${markersParam}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-  
+
   return (
     <div className={`relative ${className}`}>
       <img
