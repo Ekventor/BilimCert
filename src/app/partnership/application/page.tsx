@@ -13,6 +13,7 @@ import { MobileMenu } from '@/components/ui/MobileMenu'
 import { ChatButton } from '@/components/ui/ChatButton'
 import ReCAPTCHA from 'react-google-recaptcha'
 import toast from 'react-hot-toast'
+import { bilimcertAPI } from '@/lib/bilimcert-api'
 
 interface PartnershipForm {
   organizationInfo: {
@@ -219,21 +220,14 @@ export default function PartnershipApplicationPage() {
         recaptcha_token: formData.recaptchaToken
       }
 
-      const response = await fetch('/api/forms/partnerships', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(apiData),
-      })
+      // Используем bilimcertAPI для отправки через /api/email/send
+      const response = await bilimcertAPI.submitPartnershipForm(apiData)
 
-      const result = await response.json()
-
-      if (response.ok && result.success) {
-        toast.success(result.message)
-        router.push('/partnership/application/success?id=' + result.id)
+      if (response.success) {
+        toast.success('Серіктестік өтініші сәтті жіберілді!')
+        router.push('/partnership/application/success?id=' + (response.data?.id || 'submitted'))
       } else {
-        toast.error(result.message || 'Failed to submit application. Please try again.')
+        toast.error(response.message || 'Өтініш жіберуде қате орын алды. Қайталап көріңіз.')
       }
     } catch (error) {
       console.error('Error submitting partnership application:', error)

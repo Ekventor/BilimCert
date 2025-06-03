@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { MessageSquare, Clock, CheckCircle, Filter, Search, User, Mail } from 'lucide-react'
 import { TranslatedText } from '@/components/ui/TranslatedText'
 import { QuestionVoting } from './QuestionVoting'
+import { bilimcertAPI } from '@/lib/bilimcert-api'
 
 interface Question {
   id: number
@@ -72,18 +73,24 @@ export function QuestionsList({ showFilters = true, limit, className = '' }: Que
         ...(filters.search && { search: filters.search })
       })
 
-      const response = await fetch(`/api/forms/questions/public?${params}`)
-      const data = await response.json()
+      // Используем bilimcertAPI для получения вопросов
+      const response = await bilimcertAPI.getPublicQuestions({
+        page: pagination.page,
+        limit: pagination.limit,
+        ...(filters.category !== 'all' && { category: filters.category }),
+        ...(filters.status !== 'all' && { status: filters.status }),
+        ...(filters.search && { search: filters.search })
+      })
 
-      if (response.ok && data.success) {
-        setQuestions(data.questions || [])
+      if (response.success) {
+        setQuestions(response.data?.questions || [])
         setPagination(prev => ({
           ...prev,
-          total: data.total || 0,
-          totalPages: Math.ceil((data.total || 0) / pagination.limit)
+          total: response.data?.total || 0,
+          totalPages: Math.ceil((response.data?.total || 0) / pagination.limit)
         }))
       } else {
-        console.error('Error fetching questions:', data.message)
+        console.error('Error fetching questions:', response.message)
         setQuestions([])
       }
     } catch (error) {

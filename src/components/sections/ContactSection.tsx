@@ -5,6 +5,7 @@ import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react'
 import { TranslatedText } from '../ui/TranslatedText'
 import { StaticYandexMap } from '../ui/YandexMap'
 import toast from 'react-hot-toast'
+import { bilimcertAPI } from '@/lib/bilimcert-api'
 
 interface ContactForm {
   name: string
@@ -37,17 +38,13 @@ export function ContactSection() {
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/forms/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+      // Используем bilimcertAPI для отправки через /api/email/send
+      const response = await bilimcertAPI.submitContactForm({
+        ...formData,
+        recaptcha_token: 'contact_form_token' // Используем статический токен для контактной формы
       })
 
-      const result = await response.json()
-
-      if (response.ok && result.success) {
+      if (response.success) {
         // Reset form
         setFormData({
           name: '',
@@ -56,9 +53,9 @@ export function ContactSection() {
           subject: '',
           message: ''
         })
-        toast.success(result.message)
+        toast.success('Хабарлама сәтті жіберілді!')
       } else {
-        toast.error(result.message || 'Хабарлама жіберу кезінде қате орын алды')
+        toast.error(response.message || 'Хабарлама жіберу кезінде қате орын алды')
       }
     } catch (error) {
       console.error('Error submitting contact form:', error)

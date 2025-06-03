@@ -12,6 +12,7 @@ import { MobileMenuProvider } from '@/contexts/MobileMenuContext'
 import { MobileMenu } from '@/components/ui/MobileMenu'
 import { ChatButton } from '@/components/ui/ChatButton'
 import toast from 'react-hot-toast'
+import { bilimcertAPI } from '@/lib/bilimcert-api'
 
 interface AccreditationForm {
   type: 'institutional' | 'program' | ''
@@ -214,21 +215,14 @@ export default function AccreditationApplicationPage() {
         additional_info: `Institution Type: ${formData.institutionInfo.type}, Program Duration: ${formData.programInfo.duration}, Credits: ${formData.programInfo.credits}, Language: ${formData.programInfo.language}, Department: ${formData.programInfo.department}`
       }
 
-      const response = await fetch('/api/forms/accreditation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(apiData),
-      })
+      // Используем bilimcertAPI для отправки через /api/email/send
+      const response = await bilimcertAPI.submitAccreditationForm(apiData)
 
-      const result = await response.json()
-
-      if (response.ok && result.success) {
-        toast.success(result.message)
-        router.push('/accreditation/application/success?id=' + result.id)
+      if (response.success) {
+        toast.success('Аккредитация өтініші сәтті жіберілді!')
+        router.push('/accreditation/application/success?id=' + (response.data?.id || 'submitted'))
       } else {
-        toast.error(result.message || 'Failed to submit application. Please try again.')
+        toast.error(response.message || 'Өтініш жіберуде қате орын алды. Қайталап көріңіз.')
       }
     } catch (error) {
       console.error('Error submitting accreditation application:', error)
