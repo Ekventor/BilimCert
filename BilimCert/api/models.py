@@ -38,3 +38,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+    
+
+class NewsView(models.Model):
+    post_id = models.IntegerField()
+    ip_address = models.GenericIPAddressField()
+    viewed_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('post_id', 'ip_address')

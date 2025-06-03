@@ -1,8 +1,7 @@
 from ninja import Router
 from fastapi import Request
 from asgiref.sync import sync_to_async
-from api.news.services.news_view import track_news_view, get_viewed_at
-from api.news.services.news_view import get_views_count
+from api.news.services.news_view import track_news_view, get_viewed_at, get_views_count
 
 router = Router(tags=["News"])
 
@@ -15,9 +14,7 @@ def get_client_ip(request):
 @router.post("/view/{post_id}")
 async def view_post(request: Request, post_id: int):
     ip = get_client_ip(request)
-
     counted = await sync_to_async(track_news_view)(post_id, ip)
-
     viewed_at = await sync_to_async(get_viewed_at)(post_id, ip)
 
     return {
