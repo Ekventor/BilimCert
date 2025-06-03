@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, ArrowRight, Building, User, Users, Eye } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Building, User, Users, Eye, Shield } from 'lucide-react'
 import { TranslatedText } from '@/components/ui/TranslatedText'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { FullWidthHeader } from '@/components/layout/FullWidthHeader'
@@ -11,6 +11,7 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { MobileMenuProvider } from '@/contexts/MobileMenuContext'
 import { MobileMenu } from '@/components/ui/MobileMenu'
 import { ChatButton } from '@/components/ui/ChatButton'
+import ReCAPTCHA from 'react-google-recaptcha'
 import toast from 'react-hot-toast'
 
 interface PartnershipForm {
@@ -36,6 +37,7 @@ interface PartnershipForm {
     experience: string
     proposal: string
   }
+  recaptchaToken: string
 }
 
 const steps = [
@@ -48,6 +50,7 @@ const steps = [
 export default function PartnershipApplicationPage() {
   const router = useRouter()
   const { t } = useLanguage()
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -74,6 +77,7 @@ export default function PartnershipApplicationPage() {
       experience: '',
       proposal: '',
     },
+    recaptchaToken: '',
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -149,6 +153,11 @@ export default function PartnershipApplicationPage() {
           newErrors.proposal = t('validation.required')
         }
         break
+      case 4:
+        if (!formData.recaptchaToken) {
+          newErrors.recaptchaToken = 'reCAPTCHA verification is required'
+        }
+        break
     }
 
     setErrors(newErrors)
@@ -174,6 +183,17 @@ export default function PartnershipApplicationPage() {
     }
   }
 
+  // reCAPTCHA handler
+  const handleRecaptchaChange = (token: string | null) => {
+    setFormData(prev => ({
+      ...prev,
+      recaptchaToken: token || ''
+    }))
+    if (errors.recaptchaToken) {
+      setErrors(prev => ({ ...prev, recaptchaToken: '' }))
+    }
+  }
+
   // Form submission
   const handleSubmit = async () => {
     setIsSubmitting(true)
@@ -195,7 +215,8 @@ export default function PartnershipApplicationPage() {
         expected_outcomes: formData.partnershipDetails.experience,
         resources_offered: formData.organizationInfo.description,
         previous_partnerships: formData.partnershipDetails.experience,
-        additional_info: `Employee Count: ${formData.organizationInfo.employeeCount}, Established: ${formData.organizationInfo.establishedYear}`
+        additional_info: `Employee Count: ${formData.organizationInfo.employeeCount}, Established: ${formData.organizationInfo.establishedYear}`,
+        recaptcha_token: formData.recaptchaToken
       }
 
       const response = await fetch('/api/forms/partnerships', {
@@ -716,6 +737,26 @@ export default function PartnershipApplicationPage() {
                             <p className="mt-1 text-gray-900">{formData.partnershipDetails.proposal}</p>
                           </div>
                         </div>
+                      </div>
+
+                      {/* reCAPTCHA */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
+                          <Shield className="w-4 h-4 inline mr-2" />
+                          Қауіпсіздік растауы *
+                        </label>
+                        <div className="flex justify-center">
+                          <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                            onChange={handleRecaptchaChange}
+                            theme="light"
+                            size="normal"
+                          />
+                        </div>
+                        {errors.recaptchaToken && (
+                          <p className="mt-2 text-sm text-red-600 text-center">{errors.recaptchaToken}</p>
+                        )}
                       </div>
 
                       {/* Declaration */}

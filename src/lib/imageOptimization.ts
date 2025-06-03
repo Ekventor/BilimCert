@@ -61,7 +61,6 @@ export async function optimizeImage(
       case 'webp':
         sharpInstance = sharpInstance.webp({
           quality,
-          progressive,
           effort: 6 // Maximum compression effort
         })
         break
@@ -114,10 +113,10 @@ export async function generateResponsiveImages(
 ): Promise<OptimizedImage[]> {
   const results: OptimizedImage[] = []
   const fileName = path.parse(inputPath).name
-  
+
   for (const size of sizes) {
     const outputPath = path.join(outputDir, `${fileName}-${size}w.webp`)
-    
+
     try {
       const result = await optimizeImage(inputPath, outputPath, {
         width: size,
@@ -146,16 +145,16 @@ export async function optimizeImagesInDirectory(
 
   try {
     const files = await fs.readdir(inputDir, { withFileTypes: true })
-    
+
     for (const file of files) {
       if (file.isFile()) {
         const ext = path.extname(file.name).toLowerCase()
-        
+
         if (supportedExtensions.includes(ext)) {
           const inputPath = path.join(inputDir, file.name)
           const outputFileName = path.parse(file.name).name + '.webp'
           const outputPath = path.join(outputDir, outputFileName)
-          
+
           try {
             const result = await optimizeImage(inputPath, outputPath, {
               ...options,
@@ -185,7 +184,7 @@ export async function createWebPWithFallback(
   options: ImageOptimizationOptions = {}
 ): Promise<{ webp: OptimizedImage; fallback: OptimizedImage }> {
   const fileName = path.parse(inputPath).name
-  
+
   // Create WebP version
   const webpPath = path.join(outputDir, `${fileName}.webp`)
   const webpResult = await optimizeImage(inputPath, webpPath, {

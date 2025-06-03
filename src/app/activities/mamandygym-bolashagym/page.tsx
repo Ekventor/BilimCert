@@ -28,7 +28,7 @@ export default function MamandygymBolashagymPage() {
       id: '3',
       title: 'Статистикалық есеп',
       url: '/downloads/statistical-report.xlsx',
-      type: 'excel' as const,
+      type: 'xlsx' as const,
       size: '3.2 МБ'
     }
   ]
@@ -42,7 +42,7 @@ export default function MamandygymBolashagymPage() {
     <div className="space-y-8">
       <div className="prose prose-lg dark:prose-invert max-w-none">
         <h2>«Мамандығым-болашағым» бағдарламасы туралы</h2>
-        
+
         <p>
           «Мамандығым-болашағым» - жас адамдарға мамандық таңдауда көмек көрсету және олардың болашақ мансабын жоспарлауға бағытталған ұлттық бағдарлама.
         </p>

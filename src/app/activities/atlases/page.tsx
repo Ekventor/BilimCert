@@ -70,7 +70,7 @@ export default function AtlasesPage() {
 
   return (
     <ArticlePage
-      title={<TranslatedText textKey="activities.atlasesPage.title" fallback="Атластар жинағы - Интерактивті ақпарат көздері" />}
+      title="Атластар жинағы - Интерактивті ақпарат көздері"
       content={content}
       breadcrumbs={breadcrumbs}
       publishedAt="2019-11-01"

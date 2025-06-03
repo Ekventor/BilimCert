@@ -22,13 +22,13 @@ api.interceptors.request.use(
         config.headers.Authorization = `Bearer ${token}`
       }
     }
-    
+
     // Add language header
     if (typeof window !== 'undefined') {
       const language = localStorage.getItem('preferredLanguage') || 'kz'
       config.headers['Accept-Language'] = language
     }
-    
+
     return config
   },
   (error) => {
@@ -43,11 +43,11 @@ api.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config
-    
+
     // Handle 401 errors (unauthorized)
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
-      
+
       try {
         // Try to refresh token
         const refreshToken = localStorage.getItem('refreshToken')
@@ -55,10 +55,10 @@ api.interceptors.response.use(
           const response = await axios.post(`${API_BASE_URL}/auth/refresh/`, {
             refresh: refreshToken
           })
-          
+
           const { access } = response.data
           localStorage.setItem('accessToken', access)
-          
+
           // Retry original request
           originalRequest.headers.Authorization = `Bearer ${access}`
           return api(originalRequest)
@@ -72,7 +72,7 @@ api.interceptors.response.use(
         }
       }
     }
-    
+
     return Promise.reject(error)
   }
 )
@@ -82,47 +82,45 @@ export const apiClient = {
   // Generic methods
   get: <T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
     api.get(url, config),
-  
+
   post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
     api.post(url, data, config),
-  
+
   put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
     api.put(url, data, config),
-  
+
   patch: <T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
     api.patch(url, data, config),
-  
+
   delete: <T = any>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> =>
     api.delete(url, config),
 
   // Auth methods
   auth: {
-    login: (credentials: { email: string; password: string; remember_me?: boolean }) =>
-      api.post('/auth/login/', credentials),
-    
+    login: (credentials: {
+      username: string
+      password: string
+      recaptcha_token: string
+    }) => api.post('/auth/login/', credentials),
+
     register: (userData: {
       username: string
       email: string
       password: string
-      password_confirm: string
-      first_name?: string
-      last_name?: string
-      phone_number?: string
-      organization?: string
-      position?: string
-      preferred_language?: string
+      auth?: boolean
+      recaptcha_token: string
     }) => api.post('/auth/register/', userData),
-    
+
     logout: (refreshToken?: string) =>
       api.post('/auth/logout/', { refresh_token: refreshToken }),
-    
+
     refresh: (refreshToken: string) =>
       api.post('/auth/refresh/', { refresh: refreshToken }),
-    
+
     profile: () => api.get('/auth/users/profile/'),
-    
+
     updateProfile: (data: any) => api.put('/auth/users/profile/', data),
-    
+
     changePassword: (data: {
       old_password: string
       new_password: string
@@ -133,9 +131,9 @@ export const apiClient = {
   // Core methods
   core: {
     getConfig: () => api.get('/config/'),
-    
+
     healthCheck: () => api.get('/health/'),
-    
+
     contact: (data: {
       name: string
       email: string
@@ -148,25 +146,75 @@ export const apiClient = {
   // Content methods
   content: {
     getPages: (params?: any) => api.get('/content/pages/', { params }),
-    
+
     getPage: (slug: string) => api.get(`/content/pages/${slug}/`),
-    
+
     getFAQs: (params?: any) => api.get('/content/faqs/', { params }),
-    
+
     getBanners: (params?: any) => api.get('/content/banners/', { params }),
-    
+
     getTestimonials: (params?: any) => api.get('/content/testimonials/', { params }),
-    
+
     getPartners: (params?: any) => api.get('/content/partners/', { params }),
   },
 
   // News methods
   news: {
     getNews: (params?: any) => api.get('/news/', { params }),
-    
+
     getNewsItem: (slug: string) => api.get(`/news/${slug}/`),
-    
+
     getCategories: () => api.get('/news/categories/'),
+  },
+
+  // Email sending
+  email: {
+    send: (emailData: {
+      subject: string
+      message: string
+      to: string
+      isFiles?: boolean
+      file?: File
+      recaptcha_token: string
+    }) => {
+      const formData = new FormData()
+      formData.append('subject', emailData.subject)
+      formData.append('message', emailData.message)
+      formData.append('to', emailData.to)
+      formData.append('isFiles', emailData.isFiles ? 'true' : 'false')
+      formData.append('recaptcha_token', emailData.recaptcha_token)
+
+      if (emailData.file) {
+        formData.append('file', emailData.file)
+      }
+
+      return api.post('/email/send/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    },
+  },
+
+  // Forms
+  forms: {
+    // Accreditation application
+    submitAccreditation: (data: any) => api.post('/forms/accreditation/', data),
+
+    // Partnership application
+    submitPartnership: (data: any) => api.post('/forms/partnership/', data),
+
+    // Recognition application
+    submitRecognition: (data: any) => api.post('/forms/recognition/', data),
+
+    // Contact form
+    submitContact: (data: any) => api.post('/forms/contact/', data),
+
+    // Question form
+    submitQuestion: (data: any) => api.post('/forms/question/', data),
+
+    // Get questions
+    getQuestions: (params?: any) => api.get('/forms/questions/', { params }),
   },
 
   // File upload
@@ -174,22 +222,22 @@ export const apiClient = {
     upload: (file: File, data?: any) => {
       const formData = new FormData()
       formData.append('file', file)
-      
+
       if (data) {
         Object.keys(data).forEach(key => {
           formData.append(key, data[key])
         })
       }
-      
+
       return api.post('/files/', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
     },
-    
+
     getFiles: (params?: any) => api.get('/files/', { params }),
-    
+
     deleteFile: (id: number) => api.delete(`/files/${id}/`),
   },
 }
@@ -199,7 +247,7 @@ export const handleApiError = (error: any) => {
   if (error.response) {
     // Server responded with error status
     const { status, data } = error.response
-    
+
     switch (status) {
       case 400:
         return {

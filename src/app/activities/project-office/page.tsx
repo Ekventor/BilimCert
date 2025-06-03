@@ -21,14 +21,14 @@ export default function ProjectOfficePage() {
       id: '2',
       title: 'Жоба үлгілері',
       url: '/downloads/project-templates.docx',
-      type: 'word' as const,
+      type: 'docx' as const,
       size: '3.8 МБ'
     },
     {
       id: '3',
       title: 'Тиімділік көрсеткіштері',
       url: '/downloads/efficiency-indicators.xlsx',
-      type: 'excel' as const,
+      type: 'xlsx' as const,
       size: '2.4 МБ'
     }
   ]

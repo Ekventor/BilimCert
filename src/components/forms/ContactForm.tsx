@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { motion } from 'framer-motion'
-import { Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react'
+import { Send, Loader2, CheckCircle, AlertCircle, Shield } from 'lucide-react'
 import { TranslatedText } from '@/components/ui/TranslatedText'
+import { bilimcertAPI } from '@/lib/bilimcert-api'
+import ReCAPTCHA from 'react-google-recaptcha'
 import toast from 'react-hot-toast'
 
 // Form validation schema
@@ -16,7 +18,8 @@ const contactSchema = z.object({
   phone: z.string().min(10, 'Телефон нөмірі дұрыс емес'),
   subject: z.string().min(5, 'Тақырып кем дегенде 5 таңбадан тұруы керек'),
   message: z.string().min(20, 'Хабарлама кем дегенде 20 таңбадан тұруы керек'),
-  department: z.string().optional()
+  department: z.string().optional(),
+  recaptcha_token: z.string().min(1, 'reCAPTCHA растауы міндетті')
 })
 
 type ContactFormData = z.infer<typeof contactSchema>
@@ -42,13 +45,15 @@ const departments = [
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-    watch
+    watch,
+    setValue
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     mode: 'onChange',
@@ -58,31 +63,36 @@ export function ContactForm() {
       phone: '',
       subject: '',
       message: '',
-      department: 'general'
+      department: 'general',
+      recaptcha_token: ''
     }
   })
 
   const watchedMessage = watch('message')
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setValue('recaptcha_token', token || '')
+  }
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true)
     setSubmitStatus('idle')
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // In real implementation, send to backend:
-      // const response = await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data)
-      // })
-      
-      setSubmitStatus('success')
-      toast.success('Хабарлама сәтті жіберілді!')
-      reset()
-      
+      // Отправляем через BilimCert API
+      const response = await bilimcertAPI.submitContactForm(data)
+
+      if (response.success) {
+        setSubmitStatus('success')
+        toast.success('Хабарлама сәтті жіберілді!')
+        reset()
+        // Сбрасываем reCAPTCHA
+        recaptchaRef.current?.reset()
+      } else {
+        setSubmitStatus('error')
+        toast.error(response.message || 'Хабарлама жіберуде қате орын алды')
+      }
+
     } catch (error) {
       console.error('Error submitting contact form:', error)
       setSubmitStatus('error')
@@ -262,6 +272,32 @@ export function ContactForm() {
               {watchedMessage?.length || 0} / 20 минимум
             </span>
           </div>
+        </div>
+
+        {/* reCAPTCHA */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <Shield className="w-4 h-4 inline mr-2" />
+            Қауіпсіздік растауы *
+          </label>
+          <div className="flex justify-center">
+            <Controller
+              name="recaptcha_token"
+              control={control}
+              render={({ field }) => (
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                  onChange={handleRecaptchaChange}
+                  theme="light"
+                  size="normal"
+                />
+              )}
+            />
+          </div>
+          {errors.recaptcha_token && (
+            <p className="mt-2 text-sm text-red-600 text-center">{errors.recaptcha_token.message}</p>
+          )}
         </div>
 
         {/* Submit Button */}

@@ -71,26 +71,26 @@ export function FileUpload({
         if (progress >= 100) {
           progress = 100
           clearInterval(interval)
-          
+
           // Simulate random success/failure (90% success rate)
           if (Math.random() > 0.1) {
-            setFiles(prev => prev.map(f => 
-              f.id === fileId 
+            setFiles(prev => prev.map(f =>
+              f.id === fileId
                 ? { ...f, status: 'success', progress: 100 }
                 : f
             ))
             resolve()
           } else {
-            setFiles(prev => prev.map(f => 
-              f.id === fileId 
+            setFiles(prev => prev.map(f =>
+              f.id === fileId
                 ? { ...f, status: 'error', progress: 0, error: 'Upload failed. Please try again.' }
                 : f
             ))
             reject(new Error('Upload failed'))
           }
         } else {
-          setFiles(prev => prev.map(f => 
-            f.id === fileId 
+          setFiles(prev => prev.map(f =>
+            f.id === fileId
               ? { ...f, progress }
               : f
           ))
@@ -101,11 +101,11 @@ export function FileUpload({
 
   const handleFiles = useCallback(async (fileList: FileList) => {
     const newFiles: UploadedFile[] = []
-    
+
     for (let i = 0; i < fileList.length; i++) {
       const file = fileList[i]
       const validationError = validateFile(file)
-      
+
       if (validationError) {
         // Show error for invalid file
         const errorFile: UploadedFile = {
@@ -152,22 +152,40 @@ export function FileUpload({
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     setIsDragOver(false)
-    
+
     const droppedFiles = e.dataTransfer.files
-    if (droppedFiles.length > 0) {
+    if (droppedFiles && droppedFiles.length > 0) {
+      console.log('Files dropped:', droppedFiles.length)
       handleFiles(droppedFiles)
     }
   }, [handleFiles])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
+    e.stopPropagation()
+    setIsDragOver(true)
+  }, [])
+
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     setIsDragOver(true)
   }, [])
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault()
-    setIsDragOver(false)
+    e.stopPropagation()
+
+    // Проверяем, что мышь действительно покинула область drop zone
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    const x = e.clientX
+    const y = e.clientY
+
+    if (x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) {
+      setIsDragOver(false)
+    }
   }, [])
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,8 +206,8 @@ export function FileUpload({
   }
 
   const retryUpload = async (fileId: string) => {
-    setFiles(prev => prev.map(f => 
-      f.id === fileId 
+    setFiles(prev => prev.map(f =>
+      f.id === fileId
         ? { ...f, status: 'uploading', progress: 0, error: undefined }
         : f
     ))
@@ -250,19 +268,18 @@ export function FileUpload({
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-          isDragOver
-            ? 'border-blue-400 bg-blue-50'
-            : error
-              ? 'border-red-300 bg-red-50'
-              : 'border-gray-300 hover:border-gray-400'
-        }`}
+        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver
+          ? 'border-blue-400 bg-blue-50'
+          : error
+            ? 'border-red-300 bg-red-50'
+            : 'border-gray-300 hover:border-gray-400'
+          }`}
       >
-        <Upload className={`mx-auto h-12 w-12 mb-4 ${
-          isDragOver ? 'text-blue-500' : error ? 'text-red-400' : 'text-gray-400'
-        }`} />
-        
+        <Upload className={`mx-auto h-12 w-12 mb-4 ${isDragOver ? 'text-blue-500' : error ? 'text-red-400' : 'text-gray-400'
+          }`} />
+
         <div className="space-y-2">
           <p className="text-lg font-medium text-gray-900">
             {dragAndDropText || 'Drag and drop files here, or click to select'}
@@ -270,7 +287,7 @@ export function FileUpload({
           <p className="text-sm text-gray-500">
             {supportedFormatsText || `Supported formats: ${acceptedTypes.join(', ')} (max ${maxFileSize}MB each)`}
           </p>
-          
+
           <input
             ref={fileInputRef}
             type="file"
@@ -280,7 +297,7 @@ export function FileUpload({
             className="hidden"
             id="file-upload"
           />
-          
+
           <label
             htmlFor="file-upload"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#003366] hover:bg-[#004080] cursor-pointer"
@@ -326,7 +343,7 @@ export function FileUpload({
                     </div>
                     {file.status === 'uploading' && (
                       <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
-                        <div 
+                        <div
                           className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
                           style={{ width: `${file.progress}%` }}
                         ></div>
@@ -334,7 +351,7 @@ export function FileUpload({
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2 ml-4">
                   {file.status === 'error' && (
                     <button

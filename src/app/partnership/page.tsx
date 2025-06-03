@@ -2,12 +2,11 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { TranslatedText } from '@/components/ui/TranslatedText'
-import { 
-  Handshake, 
-  Globe, 
-  Users, 
-  Target, 
-  ArrowRight, 
+import {
+  Users,
+  Globe,
+  Target,
+  ArrowRight,
   CheckCircle,
   Building,
   Award,
@@ -125,13 +124,13 @@ export default function PartnershipPage() {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-500 dark:bg-primary-600 rounded-full mb-6">
-            <Handshake className="w-8 h-8 text-white" />
+            <Users className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
             Партнерство
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Развивайте партнерские отношения с BilimCert и станьте частью нашей сети, 
+            Развивайте партнерские отношения с BilimCert и станьте частью нашей сети,
             направленной на повышение качества образования в Казахстане и за его пределами
           </p>
         </div>
@@ -230,7 +229,7 @@ export default function PartnershipPage() {
             Готовы стать нашим партнером?
           </h2>
           <p className="text-primary-100 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-            Присоединяйтесь к нашей сети партнеров и внесите свой вклад в развитие 
+            Присоединяйтесь к нашей сети партнеров и внесите свой вклад в развитие
             качественного образования в Казахстане
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

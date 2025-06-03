@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Mail, CheckCircle, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Mail, CheckCircle, AlertCircle, Shield } from 'lucide-react'
 import { TranslatedText } from '@/components/ui/TranslatedText'
+import ReCAPTCHA from 'react-google-recaptcha'
 import toast from 'react-hot-toast'
 
 export default function ForgotPasswordPage() {
@@ -12,21 +13,35 @@ export default function ForgotPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [recaptchaToken, setRecaptchaToken] = useState('')
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const validateEmail = (email: string): boolean => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   }
 
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token || '')
+    if (token && error) {
+      setError('')
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!email) {
       setError('Электрондық пошта міндетті')
       return
     }
-    
+
     if (!validateEmail(email)) {
       setError('Дұрыс емес электрондық пошта форматы')
+      return
+    }
+
+    if (!recaptchaToken) {
+      setError('reCAPTCHA растауы міндетті')
       return
     }
 
@@ -36,7 +51,7 @@ export default function ForgotPasswordPage() {
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000))
-      
+
       setIsSubmitted(true)
       toast.success('Құпия сөзді қалпына келтіру нұсқаулары жіберілді!')
     } catch (error) {
@@ -65,7 +80,7 @@ export default function ForgotPasswordPage() {
               <span className="text-2xl font-bold text-primary-500">BilimCert</span>
             </Link>
           </div>
-          
+
           <div className="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <div className="text-center">
               <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
@@ -110,7 +125,7 @@ export default function ForgotPasswordPage() {
             <span className="text-2xl font-bold text-primary-500">BilimCert</span>
           </Link>
         </div>
-        
+
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
           Құпия сөзді қалпына келтіру
         </h2>
@@ -141,9 +156,8 @@ export default function ForgotPasswordPage() {
                     setEmail(e.target.value)
                     if (error) setError('')
                   }}
-                  className={`appearance-none block w-full pl-10 pr-3 py-2 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm ${
-                    error ? 'border-red-300' : 'border-gray-300'
-                  }`}
+                  className={`appearance-none block w-full pl-10 pr-3 py-2 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm ${error ? 'border-red-300' : 'border-gray-300'
+                    }`}
                   placeholder="your@email.com"
                 />
               </div>
@@ -153,6 +167,23 @@ export default function ForgotPasswordPage() {
                   {error}
                 </div>
               )}
+            </div>
+
+            {/* reCAPTCHA */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
+                <Shield className="w-4 h-4 inline mr-2" />
+                Қауіпсіздік растауы *
+              </label>
+              <div className="flex justify-center">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                  onChange={handleRecaptchaChange}
+                  theme="light"
+                  size="normal"
+                />
+              </div>
             </div>
 
             {/* Submit Button */}

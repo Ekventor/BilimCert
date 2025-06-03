@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Send, User, Mail, MessageSquare } from 'lucide-react'
 import { TranslatedText } from '@/components/ui/TranslatedText'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { bilimcertAPI } from '@/lib/bilimcert-api'
 import toast from 'react-hot-toast'
 
 interface QuestionFormData {
@@ -12,6 +13,7 @@ interface QuestionFormData {
   subject: string
   question: string
   category: string
+  recaptcha_token: string
 }
 
 interface QuestionFormProps {
@@ -26,7 +28,8 @@ export function QuestionForm({ onSubmitSuccess, className = '' }: QuestionFormPr
     email: '',
     subject: '',
     question: '',
-    category: 'general'
+    category: 'general',
+    recaptcha_token: ''
   })
   const [errors, setErrors] = useState<Partial<QuestionFormData>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -87,18 +90,11 @@ export function QuestionForm({ onSubmitSuccess, className = '' }: QuestionFormPr
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/forms/questions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
+      // Отправляем через BilimCert API (POST /api/email/send)
+      const response = await bilimcertAPI.submitQuestionForm(formData)
 
-      const result = await response.json()
-
-      if (response.ok && result.success) {
-        toast.success(result.message)
+      if (response.success) {
+        toast.success('Сұрақ сәтті жіберілді!')
 
         // Reset form
         setFormData({
@@ -106,12 +102,13 @@ export function QuestionForm({ onSubmitSuccess, className = '' }: QuestionFormPr
           email: '',
           subject: '',
           question: '',
-          category: 'general'
+          category: 'general',
+          recaptcha_token: ''
         })
 
         onSubmitSuccess?.()
       } else {
-        toast.error(result.message || 'Сұрақ жіберуде қате орын алды')
+        toast.error(response.message || 'Сұрақ жіберуде қате орын алды')
       }
     } catch (error) {
       console.error('Error submitting question:', error)
@@ -239,6 +236,26 @@ export function QuestionForm({ onSubmitSuccess, className = '' }: QuestionFormPr
           <p className="mt-1 text-sm text-gray-500">
             Сұрағыңызды неғұрлым толық жазсаңыз, соғұрлым дәл жауап аласыз
           </p>
+        </div>
+
+        {/* reCAPTCHA */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Shield className="w-4 h-4 inline mr-2" />
+            Қауіпсіздік растауы *
+          </label>
+          <div className="flex justify-center">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+              onChange={handleRecaptchaChange}
+              theme="light"
+              size="normal"
+            />
+          </div>
+          {errors.recaptcha_token && (
+            <p className="mt-2 text-sm text-red-600 text-center">{errors.recaptcha_token}</p>
+          )}
         </div>
 
         {/* Submit Button */}

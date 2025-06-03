@@ -3,12 +3,11 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
-import { 
-  Users, 
-  MessageSquare, 
-  FileText, 
-  Handshake, 
-  Award, 
+import {
+  Users,
+  MessageSquare,
+  FileText,
+  Award,
   CheckCircle,
   Clock,
   AlertCircle,
@@ -68,14 +67,14 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem('auth_token')
-      
+
       // Fetch dashboard stats
       const statsResponse = await fetch('/api/admin/stats', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       })
-      
+
       if (statsResponse.ok) {
         const statsData = await statsResponse.json()
         setStats(statsData)
@@ -87,7 +86,7 @@ export default function AdminDashboard() {
           'Authorization': `Bearer ${token}`,
         },
       })
-      
+
       if (submissionsResponse.ok) {
         const submissionsData = await submissionsResponse.json()
         setSubmissions(submissionsData.submissions || [])
@@ -113,7 +112,7 @@ export default function AdminDashboard() {
 
     if (filters.search) {
       const searchLower = filters.search.toLowerCase()
-      filtered = filtered.filter(sub => 
+      filtered = filtered.filter(sub =>
         sub.name.toLowerCase().includes(searchLower) ||
         sub.email.toLowerCase().includes(searchLower) ||
         (sub.subject && sub.subject.toLowerCase().includes(searchLower))
@@ -126,7 +125,7 @@ export default function AdminDashboard() {
   const updateSubmissionStatus = async (id: string, status: string) => {
     try {
       const token = localStorage.getItem('auth_token')
-      
+
       const response = await fetch(`/api/admin/submissions/${id}/status`, {
         method: 'PATCH',
         headers: {
@@ -217,7 +216,7 @@ export default function AdminDashboard() {
                   Әкімші панелі
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Қош келдіңіз, {user?.name}
+                  Қош келдіңіз, {user?.username || user?.first_name || 'Пайдаланушы'}
                 </p>
               </div>
               <button

@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Metadata } from 'next'
-import { ArrowLeft, ArrowRight, CheckCircle, Upload, User, FileText, Eye } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle, Upload, User, FileText, Eye, Shield } from 'lucide-react'
 import { TranslatedText } from '@/components/ui/TranslatedText'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { FullWidthHeader } from '@/components/layout/FullWidthHeader'
@@ -12,6 +12,7 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs'
 import { MobileMenuProvider } from '@/contexts/MobileMenuContext'
 import { MobileMenu } from '@/components/ui/MobileMenu'
 import { ChatButton } from '@/components/ui/ChatButton'
+import ReCAPTCHA from 'react-google-recaptcha'
 import toast from 'react-hot-toast'
 
 // Form data interfaces
@@ -47,6 +48,7 @@ interface ApplicationData {
   documentInfo: DocumentInfo
   uploadedFiles: UploadedFile[]
   declaration: boolean
+  recaptchaToken: string
 }
 
 const steps = [
@@ -59,9 +61,11 @@ const steps = [
 export default function RecognitionApplicationPage() {
   const router = useRouter()
   const { t } = useLanguage()
+  const recaptchaRef = useRef<ReCAPTCHA>(null)
 
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isDragOver, setIsDragOver] = useState(false)
   const [applicationData, setApplicationData] = useState<ApplicationData>({
     personalInfo: {
       firstName: '',
@@ -84,6 +88,7 @@ export default function RecognitionApplicationPage() {
     },
     uploadedFiles: [],
     declaration: false,
+    recaptchaToken: '',
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -181,6 +186,10 @@ export default function RecognitionApplicationPage() {
       newErrors.declaration = 'You must agree to the declaration'
     }
 
+    if (!applicationData.recaptchaToken) {
+      newErrors.recaptchaToken = 'reCAPTCHA verification is required'
+    }
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -221,6 +230,67 @@ export default function RecognitionApplicationPage() {
     }
   }
 
+  // reCAPTCHA handler
+  const handleRecaptchaChange = (token: string | null) => {
+    setApplicationData(prev => ({
+      ...prev,
+      recaptchaToken: token || ''
+    }))
+    if (errors.recaptchaToken) {
+      setErrors(prev => ({ ...prev, recaptchaToken: '' }))
+    }
+  }
+
+  // Drag & Drop handlers
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragOver(true)
+  }
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragOver(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Проверяем, что мышь действительно покинула область drop zone
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+    const x = e.clientX
+    const y = e.clientY
+
+    if (x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) {
+      setIsDragOver(false)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setIsDragOver(false)
+
+    const droppedFiles = e.dataTransfer.files
+    if (droppedFiles && droppedFiles.length > 0) {
+      console.log('Files dropped:', droppedFiles.length)
+      const newFiles = Array.from(droppedFiles).map(file => ({
+        file,
+        type: 'document',
+        id: Math.random().toString(36).substr(2, 9)
+      }))
+      setApplicationData(prev => ({
+        ...prev,
+        uploadedFiles: [...prev.uploadedFiles, ...newFiles]
+      }))
+      if (errors.files) {
+        setErrors(prev => ({ ...prev, files: '' }))
+      }
+    }
+  }
+
   // Form submission
   const handleSubmit = async () => {
     setIsSubmitting(true)
@@ -244,7 +314,8 @@ export default function RecognitionApplicationPage() {
         language_of_instruction: applicationData.documentInfo.languageOfInstruction,
         additional_qualifications: '', // Add field to form if needed
         work_experience: '', // Add field to form if needed
-        additional_info: `Address: ${applicationData.personalInfo.address}, ${applicationData.personalInfo.city}, ${applicationData.personalInfo.country} ${applicationData.personalInfo.postalCode}`
+        additional_info: `Address: ${applicationData.personalInfo.address}, ${applicationData.personalInfo.city}, ${applicationData.personalInfo.country} ${applicationData.personalInfo.postalCode}`,
+        recaptcha_token: applicationData.recaptchaToken
       }
 
       const response = await fetch('/api/forms/recognition', {
@@ -683,8 +754,18 @@ export default function RecognitionApplicationPage() {
                             </div>
                           </div>
 
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors">
-                            <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                          <div
+                            className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver
+                              ? 'border-blue-400 bg-blue-50'
+                              : 'border-gray-300 hover:border-gray-400'
+                              }`}
+                            onDrop={handleDrop}
+                            onDragOver={handleDragOver}
+                            onDragEnter={handleDragEnter}
+                            onDragLeave={handleDragLeave}
+                          >
+                            <Upload className={`mx-auto h-12 w-12 mb-4 ${isDragOver ? 'text-blue-500' : 'text-gray-400'
+                              }`} />
                             <div className="space-y-2">
                               <p className="text-lg font-medium text-gray-900">
                                 <TranslatedText textKey="recognitionApplication.upload.dragAndDrop" />
@@ -764,6 +845,8 @@ export default function RecognitionApplicationPage() {
                     </div>
                   )}
 
+
+
                   {/* Step 4: Review & Submit */}
                   {currentStep === 4 && (
                     <div className="space-y-6">
@@ -888,156 +971,23 @@ export default function RecognitionApplicationPage() {
                         )}
                       </div>
 
-                      {/* Declaration */}
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                        <div className="flex items-start">
-                          <input
-                            type="checkbox"
-                            id="declaration"
-                            checked={applicationData.declaration}
-                            onChange={(e) => {
-                              setApplicationData(prev => ({
-                                ...prev,
-                                declaration: e.target.checked
-                              }))
-                              if (errors.declaration) {
-                                setErrors(prev => ({ ...prev, declaration: '' }))
-                              }
-                            }}
-                            className="mt-1 h-4 w-4 text-[#003366] focus:ring-[#003366] border-gray-300 rounded"
+                      {/* reCAPTCHA */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
+                          <Shield className="w-4 h-4 inline mr-2" />
+                          Қауіпсіздік растауы *
+                        </label>
+                        <div className="flex justify-center">
+                          <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                            onChange={handleRecaptchaChange}
+                            theme="light"
+                            size="normal"
                           />
-                          <label htmlFor="declaration" className="ml-3 text-sm text-gray-700">
-                            <TranslatedText textKey="recognitionApplication.review.declaration" />
-                          </label>
                         </div>
-                        {errors.declaration && (
-                          <p className="mt-2 text-sm text-red-600">{errors.declaration}</p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Step 4: Review & Submit */}
-                  {currentStep === 4 && (
-                    <div className="space-y-6">
-                      <h2 className="text-2xl font-semibold text-[#003366] mb-6">
-                        <TranslatedText textKey="recognitionApplication.review.title" />
-                      </h2>
-
-                      {/* Personal Information Review */}
-                      <div className="bg-gray-50 rounded-lg p-6">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">
-                          <TranslatedText textKey="recognitionApplication.review.personalInfoSection" />
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.personalInfo.firstName" />:
-                            </span>
-                            <span className="ml-2 text-gray-900">{applicationData.personalInfo.firstName}</span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.personalInfo.lastName" />:
-                            </span>
-                            <span className="ml-2 text-gray-900">{applicationData.personalInfo.lastName}</span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.personalInfo.email" />:
-                            </span>
-                            <span className="ml-2 text-gray-900">{applicationData.personalInfo.email}</span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.personalInfo.phone" />:
-                            </span>
-                            <span className="ml-2 text-gray-900">{applicationData.personalInfo.phone}</span>
-                          </div>
-                          <div className="md:col-span-2">
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.personalInfo.address" />:
-                            </span>
-                            <span className="ml-2 text-gray-900">
-                              {applicationData.personalInfo.address}, {applicationData.personalInfo.city}, {applicationData.personalInfo.country}
-                              {applicationData.personalInfo.postalCode && `, ${applicationData.personalInfo.postalCode}`}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Document Information Review */}
-                      <div className="bg-gray-50 rounded-lg p-6">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">
-                          <TranslatedText textKey="recognitionApplication.review.documentInfoSection" />
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.documentInfo.documentType" />:
-                            </span>
-                            <span className="ml-2 text-gray-900 capitalize">{applicationData.documentInfo.documentType}</span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.documentInfo.degreeLevel" />:
-                            </span>
-                            <span className="ml-2 text-gray-900 capitalize">{applicationData.documentInfo.degreeLevel}</span>
-                          </div>
-                          <div className="md:col-span-2">
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.documentInfo.issuingInstitution" />:
-                            </span>
-                            <span className="ml-2 text-gray-900">{applicationData.documentInfo.issuingInstitution}</span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.documentInfo.issuingCountry" />:
-                            </span>
-                            <span className="ml-2 text-gray-900">{applicationData.documentInfo.issuingCountry}</span>
-                          </div>
-                          <div>
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.documentInfo.graduationYear" />:
-                            </span>
-                            <span className="ml-2 text-gray-900">{applicationData.documentInfo.graduationYear}</span>
-                          </div>
-                          <div className="md:col-span-2">
-                            <span className="font-medium text-gray-700">
-                              <TranslatedText textKey="recognitionApplication.documentInfo.fieldOfStudy" />:
-                            </span>
-                            <span className="ml-2 text-gray-900">{applicationData.documentInfo.fieldOfStudy}</span>
-                          </div>
-                          {applicationData.documentInfo.languageOfInstruction && (
-                            <div>
-                              <span className="font-medium text-gray-700">
-                                <TranslatedText textKey="recognitionApplication.documentInfo.languageOfInstruction" />:
-                              </span>
-                              <span className="ml-2 text-gray-900">{applicationData.documentInfo.languageOfInstruction}</span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Uploaded Files Review */}
-                      <div className="bg-gray-50 rounded-lg p-6">
-                        <h3 className="text-lg font-medium text-gray-900 mb-4">
-                          <TranslatedText textKey="recognitionApplication.review.uploadedFiles" />
-                        </h3>
-                        {applicationData.uploadedFiles.length > 0 ? (
-                          <div className="space-y-2">
-                            {applicationData.uploadedFiles.map((uploadedFile) => (
-                              <div key={uploadedFile.id} className="flex items-center p-3 bg-white rounded border">
-                                <FileText className="w-5 h-5 text-gray-400 mr-3" />
-                                <span className="text-sm text-gray-900">{uploadedFile.file.name}</span>
-                                <span className="text-xs text-gray-500 ml-2">
-                                  ({(uploadedFile.file.size / 1024 / 1024).toFixed(2)} MB)
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-sm text-gray-500">No files uploaded</p>
+                        {errors.recaptchaToken && (
+                          <p className="mt-2 text-sm text-red-600 text-center">{errors.recaptchaToken}</p>
                         )}
                       </div>
 

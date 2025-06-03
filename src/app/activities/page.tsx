@@ -195,8 +195,10 @@ export default function ActivitiesPage() {
       title="Деятельность центра"
       content={content}
       breadcrumbs={breadcrumbs}
-      downloadableFiles={downloadableFiles}
-      lastUpdated="2024-01-20"
+      publishedAt="2024-01-20"
+      updatedAt="2024-01-20"
+      author="BilimCert"
+      viewsCount={1500}
     />
   )
 }

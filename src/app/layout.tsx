@@ -98,6 +98,12 @@ export default function RootLayout({
             gtag('config', 'G-XV7MJZLGNZ');
           `}
         </Script>
+
+        {/* Google reCAPTCHA */}
+        <Script
+          src="https://www.google.com/recaptcha/api.js"
+          strategy="lazyOnload"
+        />
       </head>
       <body className={`${inter.className} bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200`} suppressHydrationWarning>
         <Providers>

@@ -172,8 +172,8 @@ export default function RegisterPage() {
     setIsSubmitting(true)
 
     try {
-      const fullName = `${formData.firstName} ${formData.lastName}`
-      const success = await register(fullName, formData.email, formData.password, formData.confirmPassword, formData.recaptchaToken)
+      const username = formData.email // Use email as username for Django
+      const success = await register(username, formData.email, formData.password, formData.recaptchaToken)
 
       if (success) {
         // Reset reCAPTCHA

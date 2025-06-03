@@ -326,8 +326,10 @@ export default function EducationSystemPage() {
       title="Система высшего образования в Казахстане"
       content={content}
       breadcrumbs={breadcrumbs}
-      downloadableFiles={downloadableFiles}
-      lastUpdated="2024-01-26"
+      publishedAt="2024-01-26"
+      updatedAt="2024-01-26"
+      author="BilimCert"
+      viewsCount={2100}
     />
   )
 }
