@@ -531,8 +531,8 @@ export function MultiStepApplicationForm() {
                   <div
                     {...getRootProps()}
                     className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${isDragActive
-                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                        : 'border-gray-300 dark:border-gray-600 hover:border-primary-400'
+                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                      : 'border-gray-300 dark:border-gray-600 hover:border-primary-400'
                       }`}
                   >
                     <input {...getInputProps()} />
@@ -599,7 +599,7 @@ export function MultiStepApplicationForm() {
                     control={control}
                     render={({ field }) => (
                       <ReCAPTCHA
-                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
                         onChange={field.onChange}
                         theme="light"
                       />

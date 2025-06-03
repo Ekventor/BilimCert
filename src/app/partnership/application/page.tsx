@@ -748,7 +748,7 @@ export default function PartnershipApplicationPage() {
                         <div className="flex justify-center">
                           <ReCAPTCHA
                             ref={recaptchaRef}
-                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
                             onChange={handleRecaptchaChange}
                             theme="light"
                             size="normal"

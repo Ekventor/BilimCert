@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 import { Send, Loader2, CheckCircle, AlertCircle, Shield } from 'lucide-react'
 import { TranslatedText } from '@/components/ui/TranslatedText'
 import { bilimcertAPI } from '@/lib/bilimcert-api'
+
 import ReCAPTCHA from 'react-google-recaptcha'
 import toast from 'react-hot-toast'
 
@@ -287,7 +288,7 @@ export function ContactForm() {
               render={({ field }) => (
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
                   onChange={handleRecaptchaChange}
                   theme="light"
                   size="normal"
