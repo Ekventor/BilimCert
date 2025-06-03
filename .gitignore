@@ -1,0 +1,7 @@
+/venv
+BilimCert/db.sqlite3
+BilimCert/db.sqlite3
+BilimCert/api/migrations
+BilimCert/api/__pycache__
+BilimCert/api/email_api/__pycache__/
+BilimCert/api/auth/__pycache__/
